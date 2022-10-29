@@ -25,9 +25,9 @@ hcBuilder.AddRabbitMQ($"amqp://localhost", name: "rabbitmq", tags: new string[] 
 var startup = new Startup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
-startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
+startup.ConfigureEventBus(app);
 
 if (app.Environment.IsDevelopment())
 {
