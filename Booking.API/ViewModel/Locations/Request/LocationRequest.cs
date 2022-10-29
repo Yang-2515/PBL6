@@ -1,8 +1,8 @@
-﻿using Booking.API.ViewModel.Location.Response;
+﻿using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace Booking.API.ViewModel.Location.Request
+namespace Booking.API.ViewModel.Locations.Request
 {
     public class LocationRequest
     {

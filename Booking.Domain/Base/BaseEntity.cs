@@ -16,15 +16,15 @@ namespace Booking.Domain.Base
     public interface IInfoEntity
     {
         public bool IsDelete { get; set; }
-        public DateTime CreateOn { get; set; }
-        public DateTime UpdateOn { get; set; }
+        public DateTime? CreateOn { get; set; }
+        public DateTime? UpdateOn { get; set; }
     }
 
     public abstract class InfoEntity : BaseEntity, IInfoEntity
     {
         public virtual bool IsDelete { get; set; }
-        public virtual DateTime CreateOn { get; set; }
-        public virtual DateTime UpdateOn { get; set; }
+        public virtual DateTime? CreateOn { get; set; }
+        public virtual DateTime? UpdateOn { get; set; }
     }
 
     public abstract class BaseEntity : IBaseEntity

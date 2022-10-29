@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Entities
 {
-    public class Location : Entity
+    public partial class Location : Entity
     {
         public string Name { get; private set; }
         public string Description { get; private set; }

@@ -1,0 +1,37 @@
+﻿using Booking.API.ViewModel.Interfaces;
+using Booking.API.ViewModel.Locations.Response;
+using Booking.Domain.Entities;
+using System.Linq.Expressions;
+
+namespace Booking.API.ViewModel.Locations.Request
+{
+    public class GetLocationInfoByBusinessRequest : IFilter<Location>, ISelection<Location, LocationInfoResponse>
+    {
+        private int _businessId { get; set; }
+        public void SetId(int businessId) => _businessId = businessId;
+        public int GetId() => _businessId;
+
+        public Expression<Func<Location, LocationInfoResponse>> GetSelection()
+        {
+            return _ => new LocationInfoResponse
+            {
+                Id = _.Id,
+                Name = _.Name,
+                Description = _.Description,
+                Address = _.Address,
+                CityId = _.CityId,
+                City = _.Wards.District.City.Name,
+                DistrictId = _.DistrictId,
+                District = _.Wards.District.Name,
+                WardsId = _.WardsId,
+                Wards = _.Wards.Name,
+                IsActive = _.IsActive
+            };
+        }
+
+        public Expression<Func<Location, bool>> GetFilter()
+        {
+            return _ => _.BusinessId == GetId() && !_.IsDelete;
+        }
+    }
+}
