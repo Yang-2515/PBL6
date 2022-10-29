@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Booking.Domain.Interfaces.Repositories
+namespace Booking.Domain.Interfaces.Repositories.Locations
 {
     public interface ICityRepository : IGenericRepository<City>
     {

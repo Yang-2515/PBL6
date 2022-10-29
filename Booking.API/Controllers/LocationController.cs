@@ -1,5 +1,6 @@
 ﻿using Booking.API.Services;
-using Booking.API.ViewModel.Location.Response;
+using Booking.API.ViewModel.Locations.Request;
+using Booking.API.ViewModel.Locations.Response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Booking.API.Controllers
@@ -30,6 +31,30 @@ namespace Booking.API.Controllers
         public async Task<List<LocationResponse>> GetWardsesByDistrict([FromRoute] int districtId)
         {
             return await _locationService.GetWardsesByDistrictAsync(districtId);
+        }
+
+        [HttpGet("all")]
+        public async Task<List<LocationInfoResponse>> GetAllLoaction()
+        {
+            return await _locationService.GetAllLocationAsync();
+        }
+
+        [HttpGet("{businessId:int}/business")]
+        public async Task<List<LocationInfoResponse>> GetLoactionByBusiness([FromRoute]int businessId, [FromQuery] GetLocationInfoByBusinessRequest request)
+        {
+            return await _locationService.GetLoactionByBusinessAsync(businessId, request);
+        }
+
+        [HttpPut]
+        public async Task<int> Update([FromBody] UpdateInfoLocationRequest request)
+        {
+            return await _locationService.UpdateAsync(request);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<int> Delete([FromRoute] int id)
+        {
+            return await _locationService.DeleteAsync(id);
         }
     }
 }

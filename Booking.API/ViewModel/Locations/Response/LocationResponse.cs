@@ -1,4 +1,4 @@
-﻿namespace Booking.API.ViewModel.Location.Response
+﻿namespace Booking.API.ViewModel.Locations.Response
 {
     public class LocationResponse
     {
