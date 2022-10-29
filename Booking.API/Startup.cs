@@ -27,7 +27,7 @@ namespace Booking.API
             services.AddSwaggerGen();
             services.AddHttpContextAccessor();
 
-            services.AddDbContext();
+            services.AddDbContext(Configuration);
             services.AddGenericRepositories();
             services.AddServices();
             services.AddUnitOfWork();
@@ -37,7 +37,7 @@ namespace Booking.API
             services.RegisterMediator();
         }
 
-        private void ConfigureEventBus(WebApplication app)
+        public void ConfigureEventBus(WebApplication app)
         {
             var eventBus = app.Services.GetRequiredService<IEventBus>();
 

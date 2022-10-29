@@ -47,13 +47,13 @@ namespace Booking.API.Extensions
             return services;
         }
 
-        public static IServiceCollection AddDbContext(this IServiceCollection services)
+        public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options
                     .UseLazyLoadingProxies()
-                    .UseSqlServer("server=localhost;database=PBL;Trusted_Connection=True;");
+                    .UseSqlServer(Configuration.GetSection("ConnectionString").Value);
             });
             return services;
         }
