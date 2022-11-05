@@ -12,6 +12,8 @@ namespace Booking.Domain.Entities
         public int BusinessId { get; private set; }
         public int RoomId { get; private set; }
         public int UserId { get; private set; }
+        public DateTime StartDay { get; private set; }
+        public DateTime FinishDay { get; private set; }
         public virtual Room Room { get; private set; }
         public virtual ICollection<BookingUtility> BookingUtilities { get; private set; }   
     }
