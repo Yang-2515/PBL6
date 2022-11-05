@@ -13,7 +13,7 @@ namespace Booking.API.ViewModel.Bookings.Request
 
         public Expression<Func<BookingEntity, bool>> GetFilter()
         {
-            return _ => _.UserId == GetId() && !
+            return _ => _.UserId == GetId();
         }
 
         public Expression<Func<BookingEntity, GetBookingResponse>> GetSelection()
