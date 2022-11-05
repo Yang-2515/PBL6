@@ -51,7 +51,7 @@ namespace Booking.Infrastructure.Data
                 .Entity<BookingUtility>()
                 .HasOne(e => e.Utility)
                 .WithMany(_ => _.BookingUtilities)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
             base.OnModelCreating(modelBuilder);
         }
 
