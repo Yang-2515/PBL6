@@ -62,5 +62,11 @@ namespace Booking.API.Controllers
         {
             return await _locationService.AddAsync(request);
         }
+
+        [HttpGet("{id:int}/utilities")]        
+        public async Task<List<UtilityResponse>> GetUtilities([FromRoute] int id)
+        {
+            return await _locationService.GetUtilitiesAsync(id);
+        }
     }
 }

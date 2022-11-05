@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Interfaces.Repositories.Locations
 {
-    public interface ILocationRepository : IGenericRepository<Location>
+    public interface IUtilityRepository : IGenericRepository<Utility>
     {
-        Task<Location> GetAsync(int id);
-        Task<bool> AnyAsync(int id);
     }
 }
