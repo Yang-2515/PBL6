@@ -14,7 +14,7 @@ namespace Booking.Domain.Entities
         public int? UtilityId { get; private set; }
         public string Name { get; private set; }
         public int Price { get; private set; }
-        public virtual Booking Booking { get; private set; }
-        public virtual Utility Utility { get; private set; }
+        public virtual Booking? Booking { get; private set; }
+        public virtual Utility? Utility { get; private set; }
     }
 }
