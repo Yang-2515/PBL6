@@ -10,8 +10,10 @@ namespace Booking.Domain.Entities
 {
     public class BookingUtility : BaseEntity
     {
-        public int BookingId { get; private set; }
-        public int UtilityId { get; private set; }
+        public int? BookingId { get; private set; }
+        public int? UtilityId { get; private set; }
+        public string Name { get; private set; }
+        public int Price { get; private set; }
         public virtual Booking Booking { get; private set; }
         public virtual Utility Utility { get; private set; }
     }

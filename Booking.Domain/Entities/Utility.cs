@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Entities
 {
-    public class Utility : Entity
+    public partial class Utility : Entity
     {
-        public int LocationId { get; private set; }
         public string Name { get; private set; }
         public int Price { get; private set; }
-        public bool IsDefault { get; private set; }
+        public int LocationId { get; private set; }
         public virtual Location Location { get; private set; }
         public virtual ICollection<BookingUtility> BookingUtilities { get; private set; }
     }

@@ -1,5 +1,6 @@
 ﻿using Booking.API.ViewModel.Locations.Request;
 using Booking.API.ViewModel.Locations.Response;
+using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,7 @@ namespace Booking.API.Services
 
         public async Task<List<LocationInfoResponse>> GetAllLocationAsync()
         {
-            return await _locationRepository.GetQuery().Select(_ => new LocationInfoResponse
+            return await _locationRepository.GetQuery(_ => !_.IsDelete).Select(_ => new LocationInfoResponse
             {
                 Id = _.Id,
                 Name = _.Name,
@@ -64,8 +65,38 @@ namespace Booking.API.Services
                 District = _.Wards.District.Name,
                 WardsId = _.WardsId,
                 Wards = _.Wards.Name,
-                IsActive = _.IsActive
+                IsActive = _.IsActive,
+                UtilityResponses = _.Utilitys.Select(_ => new UtilityResponse
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    Price = _.Price
+                }).ToList()
             }).ToListAsync();
+        }
+
+        public async Task<int> AddAsync(AddLocationRequest request)
+        {
+            var location = new Location(request.Name
+                , request.Description
+                , request.Address
+                , 1
+                , request.CityId
+                , request.DistrictId
+                , request.WardsId
+                , request.IsActive);
+            if (request.Utilities.Any())
+            {
+                foreach(var item in request.Utilities)
+                {
+                    location.AddUtility(item.Name, item.Price);
+                }
+            }
+
+            await _locationRepository.InsertAsync(location);
+            await _unitOfWork.SaveChangeAsync();
+            return location.Id;
+            
         }
 
         public async Task<List<LocationInfoResponse>> GetLoactionByBusinessAsync(int businessId, GetLocationInfoByBusinessRequest request)
@@ -87,7 +118,15 @@ namespace Booking.API.Services
                 , model.Address
                 , model.CityId
                 , model.DistrictId
-                , model.WardsId);
+                , model.WardsId
+                , model.IsActive);
+            if (model.Utilities.Any())
+            {
+                foreach(var item in model.Utilities)
+                {
+                    location.AddUtility(item.Name, item.Price);
+                }
+            }
             await _locationRepository.UpdateAsync(location);
             await _unitOfWork.SaveChangeAsync();
 

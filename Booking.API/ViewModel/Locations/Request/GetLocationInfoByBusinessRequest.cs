@@ -25,7 +25,13 @@ namespace Booking.API.ViewModel.Locations.Request
                 District = _.Wards.District.Name,
                 WardsId = _.WardsId,
                 Wards = _.Wards.Name,
-                IsActive = _.IsActive
+                IsActive = _.IsActive,
+                UtilityResponses = _.Utilitys.Select(_ => new UtilityResponse
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    Price = _.Price
+                }).ToList()
             };
         }
 

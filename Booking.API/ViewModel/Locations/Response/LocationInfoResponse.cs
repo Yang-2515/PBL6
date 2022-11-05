@@ -13,5 +13,6 @@
         public int WardsId { get; set; }
         public string Wards { get; set; }
         public bool IsActive { get; set; }
+        public List<UtilityResponse> UtilityResponses { get; set; }
     }
 }

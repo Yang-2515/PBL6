@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Booking.API.Controllers
 {
     [ApiController]
-    [Route("api/booking/location")]
+    [Route("api/booking/locations")]
     public class LocationController : ControllerBase
     {
         private readonly LocationService _locationService;
@@ -34,7 +34,7 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<List<LocationInfoResponse>> GetAllLoaction()
+        public async Task<List<LocationInfoResponse>> GetAllLocation()
         {
             return await _locationService.GetAllLocationAsync();
         }
@@ -55,6 +55,12 @@ namespace Booking.API.Controllers
         public async Task<int> Delete([FromRoute] int id)
         {
             return await _locationService.DeleteAsync(id);
+        }
+
+        [HttpPost]
+        public async Task<int> Add([FromBody] AddLocationRequest request)
+        {
+            return await _locationService.AddAsync(request);
         }
     }
 }
