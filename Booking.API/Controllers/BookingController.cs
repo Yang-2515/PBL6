@@ -1,4 +1,6 @@
 ﻿using Booking.API.Services;
+using Booking.API.ViewModel.Bookings.Request;
+using Booking.API.ViewModel.Bookings.Response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Booking.API.Controllers
@@ -13,7 +15,34 @@ namespace Booking.API.Controllers
             _bookingService = bookingService;
         }
 
-        /*[HttpGet]
-        public async Task*/
+        [HttpGet("current-user")]
+        public async Task<List<GetBookingResponse>> GetBookingByUser()
+        {
+            return await _bookingService.GetBookingByUserAsync();
+        }
+
+        [HttpGet("business")]
+        public async Task<List<GetBookingResponse>> GetBookingByBusiness()
+        {
+            return await _bookingService.GetBookingByBusinessAsync();
+        }
+
+        [HttpPost]
+        public async Task<int> Add([FromBody] AddBookingRequest request)
+        {
+            return await _bookingService.AddAsync(request);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<int> Update([FromRoute] int id, [FromBody] UpdateBookingRequest request)
+        {
+            return await _bookingService.UpdateAsync(id, request);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<int> Delete([FromRoute] int id)
+        {
+            return await _bookingService.DeleteAsync(id);
+        }
     }
 }

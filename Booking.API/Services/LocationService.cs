@@ -54,28 +54,10 @@ namespace Booking.API.Services
                         .ToListAsync();
         }
 
-        public async Task<List<LocationInfoResponse>> GetAllLocationAsync()
+        public async Task<List<LocationInfoResponse>> GetAllLocationAsync(GetLocationFilterRequest request)
         {
-            return await _locationRepository.GetQuery(_ => !_.IsDelete).Select(_ => new LocationInfoResponse
-            {
-                Id = _.Id,
-                Name = _.Name,
-                Description = _.Description,
-                Address = _.Address,
-                CityId = _.CityId,
-                City = _.Wards.District.City.Name,
-                DistrictId = _.DistrictId,
-                District = _.Wards.District.Name,
-                WardsId = _.WardsId,
-                Wards = _.Wards.Name,
-                IsActive = _.IsActive,
-                UtilityResponses = _.Utilitys.Select(_ => new UtilityResponse
-                {
-                    Id = _.Id,
-                    Name = _.Name,
-                    Price = _.Price
-                }).ToList()
-            }).ToListAsync();
+            return await _locationRepository.GetQuery(request.GetFilter(request))
+                    .Select(request.GetSelection()).ToListAsync();
         }
 
         public async Task<List<UtilityResponse>> GetUtilitiesAsync(int id)
