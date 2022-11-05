@@ -34,9 +34,9 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<List<LocationInfoResponse>> GetAllLocation()
+        public async Task<List<LocationInfoResponse>> GetAllLocation([FromQuery] GetLocationFilterRequest request)
         {
-            return await _locationService.GetAllLocationAsync();
+            return await _locationService.GetAllLocationAsync(request);
         }
 
         [HttpGet("{businessId:int}/business")]
@@ -61,6 +61,12 @@ namespace Booking.API.Controllers
         public async Task<int> Add([FromBody] AddLocationRequest request)
         {
             return await _locationService.AddAsync(request);
+        }
+
+        [HttpGet("{id:int}/utilities")]        
+        public async Task<List<UtilityResponse>> GetUtilities([FromRoute] int id)
+        {
+            return await _locationService.GetUtilitiesAsync(id);
         }
     }
 }
