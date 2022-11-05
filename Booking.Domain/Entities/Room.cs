@@ -18,5 +18,6 @@ namespace Booking.Domain.Entities
         public bool IsBooked { get; private set; }
         public DateTime AvailableDay { get; private set; }
         public virtual Location Location { get; private set; }
+        public virtual ICollection<Review> Reviews { get; private set; }
     }
 }
