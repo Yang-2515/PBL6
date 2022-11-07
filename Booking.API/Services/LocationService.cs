@@ -14,17 +14,20 @@ namespace Booking.API.Services
         private readonly IWardsRepository _wardsRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUtilityRepository _utilityRepository;
         public LocationService(ICityRepository cityRepository
             , IDistrictRepository districtRepository
             , IWardsRepository wardsRepository
             , ILocationRepository locationRepository
-            , IUnitOfWork unitOfWork)
+            , IUnitOfWork unitOfWork
+            , IUtilityRepository utilityRepository)
         {
             _cityRepository = cityRepository;
             _districtRepository = districtRepository;
             _wardsRepository = wardsRepository;
             _unitOfWork = unitOfWork;
             _locationRepository = locationRepository;
+            _utilityRepository = utilityRepository;
         }
 
         public async Task<List<LocationResponse>> GetCitiesAsync()
@@ -51,28 +54,22 @@ namespace Booking.API.Services
                         .ToListAsync();
         }
 
-        public async Task<List<LocationInfoResponse>> GetAllLocationAsync()
+        public async Task<List<LocationInfoResponse>> GetAllLocationAsync(GetLocationFilterRequest request)
         {
-            return await _locationRepository.GetQuery(_ => !_.IsDelete).Select(_ => new LocationInfoResponse
-            {
-                Id = _.Id,
-                Name = _.Name,
-                Description = _.Description,
-                Address = _.Address,
-                CityId = _.CityId,
-                City = _.Wards.District.City.Name,
-                DistrictId = _.DistrictId,
-                District = _.Wards.District.Name,
-                WardsId = _.WardsId,
-                Wards = _.Wards.Name,
-                IsActive = _.IsActive,
-                UtilityResponses = _.Utilitys.Select(_ => new UtilityResponse
-                {
-                    Id = _.Id,
-                    Name = _.Name,
-                    Price = _.Price
-                }).ToList()
-            }).ToListAsync();
+            return await _locationRepository.GetQuery(request.GetFilter(request))
+                    .Select(request.GetSelection()).ToListAsync();
+        }
+
+        public async Task<List<UtilityResponse>> GetUtilitiesAsync(int id)
+        {
+            await ValidateOnGetLocationAsync(id);
+            return await _utilityRepository.GetQuery(_ => _.LocationId == id)
+                    .Select(_ => new UtilityResponse
+                    {
+                        Id = _.Id,
+                        Name = _.Name,
+                        Price = _.Price
+                    }).ToListAsync();
         }
 
         public async Task<int> AddAsync(AddLocationRequest request)
@@ -109,9 +106,7 @@ namespace Booking.API.Services
 
         public async Task<int> UpdateAsync(UpdateInfoLocationRequest model)
         {
-            var location = await _locationRepository.GetAsync(model.Id);
-            if (location == null)
-                throw new BadHttpRequestException("Business not found");
+            var location = await GetLocationAsync(model.Id);
 
             location.UpdateInfo(model.Name
                 , model.Description
@@ -135,14 +130,26 @@ namespace Booking.API.Services
 
         public async Task<int> DeleteAsync(int id)
         {
-            var location = await _locationRepository.GetAsync(id);
-            if (location == null)
-                throw new BadHttpRequestException("Business not found");
+            var location = await GetLocationAsync(id);
 
             location.Remove();
             await _unitOfWork.SaveChangeAsync();
 
             return location.Id;
+        }
+        public async Task<Location> GetLocationAsync(int id)
+        {
+            var location = await _locationRepository.GetAsync(id);
+            if (location == null)
+                throw new BadHttpRequestException("Business not found");
+
+            return location;
+        }
+
+        public async Task ValidateOnGetLocationAsync(int id)
+        {
+            if (! await _locationRepository.AnyAsync(id))
+                throw new BadHttpRequestException("Business not found");
         }
     }
 }

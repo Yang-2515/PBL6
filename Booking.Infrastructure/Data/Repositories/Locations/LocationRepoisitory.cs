@@ -15,9 +15,14 @@ namespace Booking.Infrastructure.Data.Repositories.Locations
         {
         }
 
+        public async Task<bool> AnyAsync(int id)
+        {
+            return await AnyAsync(_ => _.Id == id && !_.IsDelete);
+        }
+
         public async Task<Location> GetAsync(int id)
         {
-            return await GetAsync(_ => _.Id == id);
+            return await GetAsync(_ => _.Id == id && !_.IsDelete);
         }
     }
 }

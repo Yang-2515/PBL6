@@ -72,6 +72,7 @@ namespace Booking.API.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<LocationService>();
+            services.AddScoped<BookingService>();
             services.AddScoped<RoomService>();
             return services;
         }

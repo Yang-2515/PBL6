@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Entities
 {
-    public class BookingUtility : BaseEntity
+    public partial class BookingUtility : BaseEntity
     {
         public int? BookingId { get; private set; }
         public int? UtilityId { get; private set; }
