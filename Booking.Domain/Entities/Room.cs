@@ -1,13 +1,8 @@
 ﻿using Booking.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Booking.Domain.Entities
 {
-    public class Room : Entity
+    public partial class Room : Entity
     {
         public string Name { get; private set; }
         public int LocationId { get; private set; }

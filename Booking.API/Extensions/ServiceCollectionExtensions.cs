@@ -73,6 +73,7 @@ namespace Booking.API.Extensions
         {
             services.AddScoped<LocationService>();
             services.AddScoped<BookingService>();
+            services.AddScoped<RoomService>();
             return services;
         }
 
