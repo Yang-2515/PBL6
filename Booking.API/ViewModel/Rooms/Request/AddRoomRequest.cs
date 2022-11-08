@@ -2,7 +2,7 @@
 
 namespace Booking.API.ViewModel.Rooms.Request
 {
-    public class CreateRoomRequest
+    public class AddRoomRequest
     {
         [Required]
         public string Name { get; set; }

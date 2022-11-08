@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Booking.Domain.Interfaces.Repositories.Rooms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,5 +34,23 @@ namespace Booking.Domain.Entities
             Capacity = capacity;
             Price = price;
         }
+
+        public void AddReview(int rating
+                              , string comment
+                              , string imgUrl
+                              , int userId)
+        {
+            Reviews.Add(new Review(rating
+                                   , comment
+                                   , imgUrl
+                                   , userId
+                                   , Id));
+        }
+
+        public void RemoveReview(Review review)
+        {
+            Reviews.Remove(review);
+        }
+
     }
 }
