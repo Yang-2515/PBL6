@@ -18,9 +18,9 @@ var configuration = new ConfigurationBuilder()
 
 configuration.GetSection("AppSettings").Get<AppSettings>(options => options.BindNonPublicProperties = true);
 
-var hcBuilder = builder.Services.AddHealthChecks();
+//var hcBuilder = builder.Services.AddHealthChecks();
 
-hcBuilder.AddRabbitMQ($"amqp://localhost", name: "rabbitmq", tags: new string[] { "rabbitmqbus" });
+//hcBuilder.AddRabbitMQ($"amqp://localhost", name: "rabbitmq", tags: new string[] { "rabbitmqbus" });
 
 var startup = new Startup(builder.Configuration);
 
@@ -35,7 +35,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                                                    //.AllowCredentials()
+                .WithExposedHeaders("*"));
 
 app.UseRouting();
 

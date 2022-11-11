@@ -26,6 +26,7 @@ namespace Booking.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
