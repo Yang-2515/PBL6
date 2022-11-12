@@ -76,15 +76,15 @@ namespace Booking.API
             services.AddServices();
             services.AddUnitOfWork();
 
-            //services.RegisterRabbitMQ(Configuration);
-            //services.RegisterEventBus();
+            services.RegisterRabbitMQ(Configuration);
+            services.RegisterEventBus();
             services.RegisterMediator();
             
         }
 
         public void ConfigureEventBus(WebApplication app)
         {
-            //var eventBus = app.Services.GetRequiredService<IEventBus>();
+            var eventBus = app.Services.GetRequiredService<IEventBus>();
 
             //eventBus.Subscribe<UserCreatedIntergrationEvent, IIntegrationEventHandler<UserCreatedIntergrationEvent>>();
             //eventBus.Subscribe<UserUpdatedIntergrationEvent, IIntegrationEventHandler<UserUpdatedIntergrationEvent>>();
