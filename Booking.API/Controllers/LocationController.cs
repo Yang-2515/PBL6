@@ -1,6 +1,8 @@
 ﻿using Booking.API.Services;
 using Booking.API.ViewModel.Locations.Request;
 using Booking.API.ViewModel.Locations.Response;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Booking.API.Controllers
@@ -14,7 +16,6 @@ namespace Booking.API.Controllers
         {
             _locationService = locationService;
         }
-
         [HttpGet("cities")]
         public async Task<List<LocationResponse>> GetCities()
         {

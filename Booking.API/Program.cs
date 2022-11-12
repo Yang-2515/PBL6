@@ -9,6 +9,7 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+builder.Services.AddCors();
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -41,9 +42,8 @@ app.UseCors(x => x
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true) // allow any origin
                                                     //.AllowCredentials()
-                .WithExposedHeaders("*"));
-
-app.UseRouting();
+                .WithExposedHeaders("*")
+                .SetPreflightMaxAge(TimeSpan.FromSeconds(600)));
 
 app.UseAuthentication();
 
