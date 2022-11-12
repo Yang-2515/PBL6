@@ -60,6 +60,30 @@ namespace Booking.API.Services
             return await _locationRepository.GetQuery(request.GetFilter(request))
                     .Select(request.GetSelection()).ToListAsync();
         }
+        public async Task<LocationInfoResponse> GetLocationAsync(int id)
+        {
+            var location = await ValidateLocationAsync(id);
+            return new LocationInfoResponse
+            {
+                Id = location.Id,
+                Name = location.Name,
+                Description = location.Description,
+                Address = location.Address,
+                CityId = location.CityId,
+                City = location.Wards.District.City.Name,
+                DistrictId = location.DistrictId,
+                District = location.Wards.District.Name,
+                WardsId = location.WardsId,
+                Wards = location.Wards.Name,
+                IsActive = location.IsActive,
+                UtilityResponses = location.Utilitys.Select(_ => new UtilityResponse
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    Price = _.Price
+                }).ToList()
+            };
+        }
 
         public async Task<List<UtilityResponse>> GetUtilitiesAsync(int id)
         {
@@ -107,7 +131,7 @@ namespace Booking.API.Services
 
         public async Task<int> UpdateAsync(UpdateInfoLocationRequest model)
         {
-            var location = await GetLocationAsync(model.Id);
+            var location = await ValidateLocationAsync(model.Id);
 
             location.UpdateInfo(model.Name
                 , model.Description
@@ -131,14 +155,14 @@ namespace Booking.API.Services
 
         public async Task<int> DeleteAsync(int id)
         {
-            var location = await GetLocationAsync(id);
+            var location = await ValidateLocationAsync(id);
 
             location.Remove();
             await _unitOfWork.SaveChangeAsync();
 
             return location.Id;
         }
-        public async Task<Location> GetLocationAsync(int id)
+        public async Task<Location> ValidateLocationAsync(int id)
         {
             var location = await _locationRepository.GetAsync(id);
             if (location == null)
