@@ -28,6 +28,7 @@ namespace Booking.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo

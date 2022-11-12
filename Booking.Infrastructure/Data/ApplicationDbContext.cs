@@ -79,7 +79,7 @@ namespace Booking.Infrastructure.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseLazyLoadingProxies()
-                .UseSqlServer("server=localhost;database=PBL;Trusted_Connection=True;");
+                .UseSqlServer("server=118.69.61.226;database=Intern_Microservice;user id=sa;password=vStation123;");
 
             return new ApplicationDbContext(optionsBuilder.Options, new NoMediator());
         }

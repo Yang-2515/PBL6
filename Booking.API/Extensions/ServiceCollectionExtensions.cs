@@ -90,14 +90,8 @@ namespace Booking.API.Extensions
             {
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                var rabbitMQ = Configuration.GetSection("RabbitMQ");
-                var factory = new ConnectionFactory()
-                {
-                    HostName = rabbitMQ.GetSection("Hostname").Value,
-                    DispatchConsumersAsync = true,
-                    UserName = rabbitMQ.GetSection("Username").Value,
-                    Password = rabbitMQ.GetSection("Password").Value,
-                };
+                var factory = new ConnectionFactory();
+                factory.Uri = new Uri(Configuration.GetSection("RabbitMQConnectionString").Value);
 
                 var retryCount = Int32.Parse(Configuration.GetSection("EventBusRetryCount").Value);
 
