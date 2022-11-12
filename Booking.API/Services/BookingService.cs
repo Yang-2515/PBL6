@@ -7,14 +7,15 @@ using BookingEntity = Booking.Domain.Entities.Booking;
 
 namespace Booking.API.Services
 {
-    public class BookingService
+    public class BookingService : ServiceBase
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IBookingUtilityRepository _bookingUtilityRepository;
         private readonly IUnitOfWork _unitOfWork;
         public BookingService(IBookingRepository bookingRepository
             , IBookingUtilityRepository bookingUtilityRepository
-            , IUnitOfWork unitOfWork)
+            , IUnitOfWork unitOfWork
+            , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _bookingRepository = bookingRepository;
             _unitOfWork = unitOfWork;
@@ -23,7 +24,7 @@ namespace Booking.API.Services
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync()
         {
             var request = new GetBookingRequest();
-            return await _bookingRepository.GetQuery(request.GetFilterByUser(1))
+            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id))
                         .Select(request.GetSelection())
                         .ToListAsync();
         }
@@ -70,8 +71,8 @@ namespace Booking.API.Services
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
                     , request.FinishDay
-                    , 1
-                    , "Giang"
+                    , GetCurrentUserId().Id
+                    , GetCurrentUserId().Name
                     , 1);
             if (request.Utilities.Any())
             {

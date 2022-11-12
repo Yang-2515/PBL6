@@ -1,5 +1,4 @@
-﻿using Booking.Domain.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Entities
 {
-    public class User : Entity
+    public class User
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Email { get; private set; }
+        public User(string id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public string Id { get; private set; }
+        public string Name { get; private set; }
     }
 }

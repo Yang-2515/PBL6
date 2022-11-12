@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Booking.API.Services
 {
-    public class RoomService
+    public class RoomService : ServiceBase
     {
         private readonly IRoomRepository _roomRepository;
         private readonly ILocationRepository _locationRepository;
@@ -22,7 +22,8 @@ namespace Booking.API.Services
         public RoomService(IRoomRepository roomRepository
                           , ILocationRepository locationRepository
                           , IReviewRepository reviewRepository
-                          , IUnitOfWork unitOfWork)
+                          , IUnitOfWork unitOfWork
+                          , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _roomRepository = roomRepository;
             _locationRepository = locationRepository;

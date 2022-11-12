@@ -1,12 +1,14 @@
 ﻿using Booking.API.Services;
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Booking.API.Controllers
 {
     [ApiController]
     [Route("api/booking/bookings")]
+    [Authorize]
     public class BookingController : ControllerBase
     {
         private readonly BookingService _bookingService;

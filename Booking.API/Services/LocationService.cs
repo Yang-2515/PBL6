@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Booking.API.Services
 {
-    public class LocationService
+    public class LocationService : ServiceBase
     {
         private readonly ICityRepository _cityRepository;
         private readonly IDistrictRepository _districtRepository;
@@ -20,7 +20,8 @@ namespace Booking.API.Services
             , IWardsRepository wardsRepository
             , ILocationRepository locationRepository
             , IUnitOfWork unitOfWork
-            , IUtilityRepository utilityRepository)
+            , IUtilityRepository utilityRepository
+            , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _cityRepository = cityRepository;
             _districtRepository = districtRepository;

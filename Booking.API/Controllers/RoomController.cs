@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Booking.API.Controllers
 {
     [ApiController]
-    [Route("api/booking")]
+    [Route("api/booking/rooms")]
     [Authorize]
     public class RoomController : ControllerBase
     {
@@ -20,13 +20,13 @@ namespace Booking.API.Controllers
             _roomService = roomService;
         }
 
-        [HttpPost("/locations/{locationId:int}/rooms/all")]
+        [HttpPost("/api/booking/locations/{locationId:int}/rooms/all")]
         public async Task<List<RoomBasicInfoResponse>> GetAll([FromRoute] int locationId, [FromBody] RoomBasicInfoRequest request)
         {
             return await _roomService.GetByFilter(locationId, request);
         }
 
-        [HttpPost("/locations/{locationId:int}/rooms")]
+        [HttpPost("/api/booking/locations/{locationId:int}/rooms")]
         public async Task<bool> CreateRoom([FromRoute] int locationId, [FromBody] AddRoomRequest request)
         {
             return await _roomService.CreateAsync(locationId, request);
@@ -34,19 +34,19 @@ namespace Booking.API.Controllers
 
         #region Review
 
-        [HttpGet("/locations/{locationId:int}/rooms/{roomId}/reviews")]
+        [HttpGet("/api/booking/locations/{locationId:int}/rooms/{roomId}/reviews")]
         public async Task<List<ReviewResponse>> GetReview([FromRoute] int locationId, [FromRoute] int roomId)
         {
             return await _roomService.GetAllReview(locationId, roomId);
         }
 
-        [HttpPost("/locations/{locationId:int}/rooms/{roomId}/reviews")]
+        [HttpPost("/api/booking/locations/{locationId:int}/rooms/{roomId}/reviews")]
         public async Task<bool> AddReview([FromRoute] int locationId, [FromRoute] int roomId, [FromBody] AddReviewRequest request)
         {
             return await _roomService.AddReview(locationId, roomId, request);
         }
 
-        [HttpDelete("/locations/{locationId:int}/rooms/{roomId}/reviews/{reviewId}")]
+        [HttpDelete("/api/booking/locations/{locationId:int}/rooms/{roomId}/reviews/{reviewId}")]
         public async Task<bool> DeleteReview([FromRoute] int locationId, [FromRoute] int roomId, [FromRoute] int reviewId)
         {
             return await _roomService.DeleteReview(locationId, roomId, reviewId);
