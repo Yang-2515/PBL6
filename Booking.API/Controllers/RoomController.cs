@@ -32,6 +32,18 @@ namespace Booking.API.Controllers
             return await _roomService.CreateAsync(locationId, request);
         }
 
+        [HttpPut("/api/booking/locations/{locationId:int}/rooms/{roomId:int}")]
+        public async Task<bool> UpdateRoom([FromRoute] int locationId, [FromRoute] int roomId, [FromBody] UpdateRoomRequest request)
+        {
+            return await _roomService.UpdateAsync(locationId, roomId, request);
+        }
+
+        [HttpDelete("/api/booking/locations/{locationId:int}/rooms/{roomId:int}")]
+        public async Task<bool> DeleteeRoom([FromRoute] int locationId, [FromRoute] int roomId)
+        {
+            return await _roomService.DeleteAsync(locationId, roomId);
+        }
+
         #region Review
 
         [HttpGet("/api/booking/locations/{locationId:int}/rooms/{roomId}/reviews")]
