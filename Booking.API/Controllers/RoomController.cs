@@ -53,7 +53,7 @@ namespace Booking.API.Controllers
         }
 
         [HttpPost("{roomId:int}/reviews")]
-        public async Task<bool> AddReview([FromRoute] int roomId, [FromBody] AddReviewRequest request)
+        public async Task<bool> AddReview([FromRoute] int roomId, [FromForm] AddReviewRequest request)
         {
             return await _roomService.AddReviewAsync(roomId, request);
         }
