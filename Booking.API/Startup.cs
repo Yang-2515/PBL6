@@ -1,4 +1,5 @@
 ﻿using Booking.API.Extensions;
+using Booking.API.IntegrationEvents.Events;
 using Booking.Domain.DomainEvents.Locations;
 using Booking.Domain.Interfaces.Repositories;
 using Booking.Domain.Models;
@@ -87,7 +88,7 @@ namespace Booking.API
         {
             var eventBus = app.Services.GetRequiredService<IEventBus>();
 
-            //eventBus.Subscribe<UserCreatedIntergrationEvent, IIntegrationEventHandler<UserCreatedIntergrationEvent>>();
+            eventBus.Subscribe<UserCreatedIntergrationEvent, IIntegrationEventHandler<UserCreatedIntergrationEvent>>();
             //eventBus.Subscribe<UserUpdatedIntergrationEvent, IIntegrationEventHandler<UserUpdatedIntergrationEvent>>();
         }
     }
