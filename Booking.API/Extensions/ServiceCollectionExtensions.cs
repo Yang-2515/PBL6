@@ -1,6 +1,7 @@
 ﻿using Booking.API.IntegrationEvents.EventHandles;
 using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
+using Booking.Domain.DomainEvents.Locations;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories;
 using Booking.Infrastructure.Data;
@@ -106,6 +107,7 @@ namespace Booking.API.Extensions
         public static IServiceCollection RegisterMediator(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(typeof(DeleteLocationDomainEvent).GetTypeInfo().Assembly);
             //services.AddMediatR(typeof(CreateUserDomainEvent).GetTypeInfo().Assembly);
             return services;
         }

@@ -81,7 +81,7 @@ namespace Booking.API.Controllers
             return await _locationService.GetUtilitiesAsync(id);
         }
         [HttpPost("test")]
-        public async Task<string> ImageUpload(IFormFile file)
+        public async Task<ImageUploadResult> ImageUpload(IFormFile file)
         {
             return await _photoService.AddItemPhotoAsync(file);
         }

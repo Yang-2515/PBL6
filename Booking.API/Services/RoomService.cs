@@ -18,17 +18,20 @@ namespace Booking.API.Services
         private readonly ILocationRepository _locationRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly PhotoService _photoService;
 
         public RoomService(IRoomRepository roomRepository
                           , ILocationRepository locationRepository
                           , IReviewRepository reviewRepository
                           , IUnitOfWork unitOfWork
-                          , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+                          , IHttpContextAccessor httpContextAccessor
+                          , PhotoService photoService) : base(httpContextAccessor)
         {
             _roomRepository = roomRepository;
             _locationRepository = locationRepository;
             _reviewRepository = reviewRepository;
             _unitOfWork = unitOfWork;
+            _photoService = photoService;
         }
         public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
         {
@@ -67,10 +70,15 @@ namespace Booking.API.Services
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
-            return room.Reviews
-                    .AsQueryable()
-                    .Select(new ReviewRequest().GetSelection())
-                    .ToList();
+            var reviews =  room.Reviews
+                                .AsQueryable()
+                                .Select(new ReviewRequest().GetSelection())
+                                .ToList();
+            foreach (var item in reviews)
+            {
+                item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
+            }
+            return reviews;
         }
 
         public async Task<int> CreateAsync(AddRoomRequest request)
@@ -99,8 +107,10 @@ namespace Booking.API.Services
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+
+            var uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
             
-            room.AddReview(request.Rating, request.Comment, request.ImgUrl, GetCurrentUserId().Id);
+            room.AddReview(request.Rating, request.Comment, uploadFile.PublicId, GetCurrentUserId().Id);
             return await _unitOfWork.SaveChangeAsync();
         }
 

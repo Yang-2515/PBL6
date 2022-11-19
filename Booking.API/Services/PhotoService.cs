@@ -19,7 +19,7 @@ namespace Booking.API.Services
             );
             _cloudinary = new Cloudinary(acc);
         }
-        public async Task<string> AddItemPhotoAsync(IFormFile file)
+        public async Task<ImageUploadResult> AddItemPhotoAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
             if (file.Length > 0)
@@ -32,9 +32,13 @@ namespace Booking.API.Services
                 };
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
-            return uploadResult.Url.ToString();
+            return uploadResult;
         }
-
+        public async Task<string> GetUrlImage(string id)
+        {
+            var resourceResponse =  await _cloudinary.GetResourceAsync(id);
+            return resourceResponse.Url;
+        }
 
     }
 }
