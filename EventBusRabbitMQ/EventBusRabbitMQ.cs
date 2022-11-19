@@ -16,7 +16,7 @@ namespace EventBusRabbitMQ
 {
     public class EventBusRabbitMQServices : IEventBus, IDisposable
     {
-        private const string BROKER_NAME = "test";
+        private const string BROKER_NAME = "booking";
 
         private readonly IRabbitMQPersistentConnection _persistentConnection;
         private readonly ILogger<EventBusRabbitMQServices> _logger;
