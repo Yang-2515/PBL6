@@ -4,6 +4,7 @@ using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Bookings;
 using Microsoft.EntityFrameworkCore;
 using BookingEntity = Booking.Domain.Entities.Booking;
+using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
 namespace Booking.API.Services
 {
@@ -73,7 +74,7 @@ namespace Booking.API.Services
                     , request.FinishDay
                     , GetCurrentUserId().Id
                     , GetCurrentUserId().Name
-                    , 1);
+                    , GetCurrentUserId().BusinessId);
             if (request.Utilities.Any())
             {
                 foreach(var item in request.Utilities)
@@ -92,7 +93,7 @@ namespace Booking.API.Services
         {
             var booking = await _bookingRepository.GetAsync(id);
             if (booking == null)
-                throw new BadHttpRequestException("Booking not found");
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundBooking);
 
             return booking;
         }

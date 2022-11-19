@@ -4,6 +4,7 @@ using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Microsoft.EntityFrameworkCore;
+using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
 namespace Booking.API.Services
 {
@@ -102,7 +103,7 @@ namespace Booking.API.Services
             var location = new Location(request.Name
                 , request.Description
                 , request.Address
-                , 1
+                , GetCurrentUserId().BusinessId
                 , request.CityId
                 , request.DistrictId
                 , request.WardsId
@@ -121,9 +122,9 @@ namespace Booking.API.Services
             
         }
 
-        public async Task<List<LocationInfoResponse>> GetLoactionByBusinessAsync(int businessId, GetLocationInfoByBusinessRequest request)
+        public async Task<List<LocationInfoResponse>> GetLoactionByBusinessAsync(GetLocationInfoByBusinessRequest request)
         {
-            request.SetId(businessId);
+            request.SetId(GetCurrentUserId().BusinessId);
             return await _locationRepository.GetQuery(request.GetFilter())
                         .Select(request.GetSelection())
                         .ToListAsync();
@@ -132,6 +133,11 @@ namespace Booking.API.Services
         public async Task<int> UpdateAsync(UpdateInfoLocationRequest model)
         {
             var location = await ValidateLocationAsync(model.Id);
+
+            if (location.BusinessId != GetCurrentUserId().BusinessId)
+            {
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
+            }
 
             location.UpdateInfo(model.Name
                 , model.Description
@@ -157,6 +163,11 @@ namespace Booking.API.Services
         {
             var location = await ValidateLocationAsync(id);
 
+            if (location.BusinessId != GetCurrentUserId().BusinessId)
+            {
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
+            }
+
             location.Remove();
             await _unitOfWork.SaveChangeAsync();
 
@@ -166,15 +177,15 @@ namespace Booking.API.Services
         {
             var location = await _locationRepository.GetAsync(id);
             if (location == null)
-                throw new BadHttpRequestException("Business not found");
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
 
             return location;
         }
 
         public async Task ValidateOnGetLocationAsync(int id)
         {
-            if (! await _locationRepository.AnyAsync(id))
-                throw new BadHttpRequestException("Business not found");
+            if (!await _locationRepository.AnyAsync(id))
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
         }
     }
 }

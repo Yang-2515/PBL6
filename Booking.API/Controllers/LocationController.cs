@@ -47,10 +47,10 @@ namespace Booking.API.Controllers
             return await _locationService.GetLocationAsync(id);
         }
 
-        [HttpGet("{businessId:int}/business")]
-        public async Task<List<LocationInfoResponse>> GetLoactionByBusiness([FromRoute]int businessId, [FromQuery] GetLocationInfoByBusinessRequest request)
+        [HttpGet("business")]
+        public async Task<List<LocationInfoResponse>> GetLocationByBusiness([FromQuery] GetLocationInfoByBusinessRequest request)
         {
-            return await _locationService.GetLoactionByBusinessAsync(businessId, request);
+            return await _locationService.GetLoactionByBusinessAsync(request);
         }
 
         [HttpPut]

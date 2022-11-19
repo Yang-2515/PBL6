@@ -13,7 +13,9 @@ namespace Booking.API.Services
         public User GetCurrentUserId()
         {
             var user = _contextAccessor.HttpContext.User;
-            return new User(user.Claims.First(c => c.Type == "id").Value, user.Claims.First(c => c.Type == "firstName").Value);
+            return new User(user.Claims.First(c => c.Type == "id").Value
+                , user.Claims.First(c => c.Type == "firstName").Value
+                , user.Claims.First(c => c.Type == "businessId").Value);
         }
     }
 }

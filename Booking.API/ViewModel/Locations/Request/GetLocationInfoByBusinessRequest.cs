@@ -7,9 +7,9 @@ namespace Booking.API.ViewModel.Locations.Request
 {
     public class GetLocationInfoByBusinessRequest : IFilter<Location>, ISelection<Location, LocationInfoResponse>
     {
-        private int _businessId { get; set; }
-        public void SetId(int businessId) => _businessId = businessId;
-        public int GetId() => _businessId;
+        private string _businessId { get; set; }
+        public void SetId(string businessId) => _businessId = businessId;
+        public string GetId() => _businessId;
 
         public Expression<Func<Location, LocationInfoResponse>> GetSelection()
         {

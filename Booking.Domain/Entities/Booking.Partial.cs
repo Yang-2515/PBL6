@@ -9,7 +9,7 @@ namespace Booking.Domain.Entities
 {
     public partial class Booking
     {
-        public Booking(int roomId, DateTime startDay, DateTime finishDay, string userId, string userName, int businessId)        {
+        public Booking(int roomId, DateTime startDay, DateTime finishDay, string userId, string userName, string businessId)        {
             RoomId = roomId;
             StartDay = startDay;
             FinishDay = finishDay;
