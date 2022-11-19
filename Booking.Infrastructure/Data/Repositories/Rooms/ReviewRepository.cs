@@ -20,5 +20,10 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
         {
             return GetQuery(_ => _.RoomId == roomId);
         }
+
+        public async Task<Review> GetAsync(int roomId, int reviewId)
+        {
+            return await GetAsync(_ => _.RoomId == roomId && _.Id == reviewId);
+        }
     }
 }

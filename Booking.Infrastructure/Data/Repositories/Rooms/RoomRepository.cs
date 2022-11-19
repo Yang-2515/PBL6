@@ -15,6 +15,19 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
         {
         }
 
+        public async Task<Room> GetAsync(int roomId, int locationId)
+        {
+            return await GetAsync(_ => _.Id == roomId
+                    && !_.IsDelete
+                    && _.LocationId == locationId);
+        }
+
+        public async Task<Room> GetAsync(int roomId)
+        {
+            return await GetAsync(_ => _.Id == roomId
+                    && !_.IsDelete);
+        }
+
         public IQueryable<Room> GetByFilter(int? locationId
             , string? name
             , int? fromCapacity
@@ -41,6 +54,11 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
                                    || _.Price >= toPrice.Value
                                  )
                             );
+        }
+
+        public async Task<bool> IsExistsNameRoom(string name)
+        {
+            return await AnyAsync(_ => _.Name == name && !_.IsDelete);
         }
     }
 }

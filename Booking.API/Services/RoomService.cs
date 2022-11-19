@@ -8,7 +8,7 @@ using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Booking.Domain.Interfaces.Repositories.Rooms;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
 namespace Booking.API.Services
 {
@@ -34,7 +34,7 @@ namespace Booking.API.Services
         {
             var isValidLocation = await ValidLocation(locationId);
             if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
             var rooms = _roomRepository.GetByFilter(locationId
                                                     , request.Name
                                                     , request.FromCapacity
@@ -62,129 +62,115 @@ namespace Booking.API.Services
             return await rooms.Select(new RoomBasicInfoRequest().GetSelection()).ToListAsync();
         }
 
-        public async Task<List<ReviewResponse>> GetAllReview(int locationId, int roomId)
+        public async Task<List<ReviewResponse>> GetAllReviewAsync(int roomId)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
+            var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
             return room.Reviews
                     .AsQueryable()
                     .Select(new ReviewRequest().GetSelection())
                     .ToList();
         }
 
-        public async Task<bool> CreateAsync(int locationId, AddRoomRequest request)
+        public async Task<int> CreateAsync(AddRoomRequest request)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = new Room(locationId
+            var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
+            if (!isOwner)
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
+
+            var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
+            if(isExistsName)
+                throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
+
+            var room = new Room(request.LocationId
                                 , request.Name
                                 , request.BusinessId
                                 , request.Capacity
                                 , request.Price);
             await _roomRepository.InsertAsync(room);
+            await _unitOfWork.SaveChangeAsync();
+
+            return room.Id;
+        }
+
+        public async Task<bool> AddReviewAsync(int roomId, AddReviewRequest request)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
+            if (room == null)
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+            
+            room.AddReview(request.Rating, request.Comment, request.ImgUrl, GetCurrentUserId().Id);
             return await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task<bool> AddReview(int locationId, int roomId, AddReviewRequest request)
+        public async Task<bool> UpdateReviewAsync(int reviewId, UpdateReviewRequest request)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
-            if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
-            room.AddReview(request.Rating, request.Comment, request.ImgUrl, request.UserId);
+            var review = await ValidateOnGetReview(reviewId);
+            if (review.UserId != GetCurrentUserId().Id)
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerReview);
+
+            review.Update(request.Rating, request.Comment, request.ImgUrl);
             return await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task<bool> UpdateReview(int locationId, int roomId, int reviewId, UpdateReviewRequest request)
+        public async Task<bool> UpdateAsync(int roomId, UpdateRoomRequest request)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
+            var room = await _roomRepository.GetAsync(_ => _.Id == roomId 
+                            && !_.IsDelete);
             if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
-            var validReview = await ValidReview(roomId, reviewId);
-            if (!validReview)
-                throw new BadHttpRequestException("Không tồn tại thông tin review");
-            var review = room.Reviews.First(_ => _.Id == reviewId);
-            review.Update(request.Rating, request.Comment, request.ImgUrl, request.UserId, roomId);
-            return await _unitOfWork.SaveChangeAsync();
-        }
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
 
-        public async Task<bool> UpdateAsync(int locationId, int roomId, UpdateRoomRequest request)
-        {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
-            if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
-            room.Update(locationId
-                        , request.Name != null ? request.Name : room.Name
-                        , request.BusinessId.HasValue ? request.BusinessId.Value : room.BusinessId
+            if (room.BusinessId != GetCurrentUserId().BusinessId)
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
+
+            room.Update( request.Name != null ? request.Name : room.Name
                         , request.Capacity.HasValue ? request.Capacity.Value : room.Capacity
                         , request.Price.HasValue ? request.Price.Value : room.Price);
             await _roomRepository.UpdateAsync(room);
             return await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task<bool> DeleteAsync(int locationId, int roomId)
+        public async Task<int> DeleteAsync(int roomId)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
-            if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
-            await _roomRepository.RemoveAsync(room);
-            return await _unitOfWork.SaveChangeAsync();
+            var room = await ValidateOnGetRoom(roomId);
+            if (room.BusinessId != GetCurrentUserId().BusinessId)
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
+            room.Remove();
+            await _unitOfWork.SaveChangeAsync();
+            return room.Id;
         }
 
-        public async Task<bool> DeleteReview(int locationId, int roomId, int reviewId)
+        public async Task<bool> DeleteReviewAsync(int roomId, int reviewId)
         {
-            var isValidLocation = await ValidLocation(locationId);
-            if (!isValidLocation)
-                throw new BadHttpRequestException("Không tồn tại vị trí");
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
-            if (room == null)
-                throw new BadHttpRequestException("Không tồn tại phòng");
-            var validReview = await ValidReview(roomId, reviewId);
-            if (!validReview)
-                throw new BadHttpRequestException("Không tồn tại thông tin review");
-            var review = room.Reviews.First(_ => _.Id == reviewId);
+            var room = await ValidateOnGetRoom(roomId);
+            var review = await ValidateOnGetReview(reviewId);
+            if (review.UserId != GetCurrentUserId().Id)
+                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerReview);
+
             room.RemoveReview(review);
             return await _unitOfWork.SaveChangeAsync();
         }
 
         public async Task<bool> ValidLocation(int locationId)
         {
-            var location = await _locationRepository.GetAsync(_ => _.Id == locationId);
-            if (location == null)
-                return false;
-            return true;
+            return await _locationRepository.AnyAsync(_ => _.Id == locationId && !_.IsDelete);
         }
 
-        public async Task<bool> ValidRoom(int roomId)
+        public async Task<Review> ValidateOnGetReview(int reviewId)
         {
-            var room = await _roomRepository.GetAsync(_ => _.Id == roomId);
+            var review = await _reviewRepository.GetAsync(_ => _.Id == reviewId && !_.IsDelete);
+            if (review == null)
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundReview);
+            return review;
+        }
+
+        public async Task<Room> ValidateOnGetRoom(int roomId)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
-                return false;
-            return true;
-        }
-
-        public async Task<bool> ValidReview(int roomId, int reviewId)
-        {
-            var valid = await _reviewRepository.AnyAsync(_ => _.RoomId == roomId && _.Id == reviewId);
-            if (!valid)
-                return false;
-            return true;
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+            return room;
         }
     }
 }

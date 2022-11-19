@@ -1,4 +1,5 @@
 ﻿using Booking.API.Extensions;
+using Booking.Domain.DomainEvents.Locations;
 using Booking.Domain.Interfaces.Repositories;
 using Booking.Domain.Models;
 using Booking.Infrastructure.Data;
@@ -75,6 +76,7 @@ namespace Booking.API
             services.AddGenericRepositories();
             services.AddServices();
             services.AddUnitOfWork();
+            services.RegisterMediator();
 
             services.RegisterRabbitMQ(Configuration);
             services.RegisterEventBus();
@@ -88,6 +90,11 @@ namespace Booking.API
 
             //eventBus.Subscribe<UserCreatedIntergrationEvent, IIntegrationEventHandler<UserCreatedIntergrationEvent>>();
             //eventBus.Subscribe<UserUpdatedIntergrationEvent, IIntegrationEventHandler<UserUpdatedIntergrationEvent>>();
+        }
+        private void RegisterMediator(IServiceCollection services)
+        {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(typeof(DeleteLocationDomainEvent).GetTypeInfo().Assembly);
         }
     }
 }

@@ -15,18 +15,9 @@ namespace Booking.Domain.Entities
         }
         public Room(int locationId
                     , string name
-                    , int businessId
+                    , string businessId
                     , int capacity
                     , int price)
-        {
-            Update(locationId, name, businessId, capacity, price);
-        }
-
-        public void Update(int locationId
-                           , string name
-                           , int businessId
-                           , int capacity
-                           , int price)
         {
             Name = name;
             LocationId = locationId;
@@ -35,10 +26,19 @@ namespace Booking.Domain.Entities
             Price = price;
         }
 
+        public void Update(string name
+                           , int capacity
+                           , int price)
+        {
+            Name = name;
+            Capacity = capacity;
+            Price = price;
+        }
+
         public void AddReview(int rating
                               , string comment
                               , string imgUrl
-                              , int userId)
+                              , string userId)
         {
             Reviews.Add(new Review(rating
                                    , comment
@@ -50,6 +50,12 @@ namespace Booking.Domain.Entities
         public void RemoveReview(Review review)
         {
             Reviews.Remove(review);
+        }
+        
+        public void Remove()
+        {
+            IsDelete = true;
+            Reviews.Clear();
         }
 
     }

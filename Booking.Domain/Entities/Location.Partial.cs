@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Booking.Domain.DomainEvents.Locations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Booking.Domain.Entities
 {
     public partial class Location
     {
-        public Location(string name, string description, string address, int businessId, int cityId, int districtId, int wardsId, bool isActive)
+        public Location(string name, string description, string address, string businessId, int cityId, int districtId, int wardsId, bool isActive)
         {
             Name = name;
             Description = description;
@@ -39,6 +40,8 @@ namespace Booking.Domain.Entities
         {
             IsDelete = true;
             Utilitys.Clear();
+
+            this.AddEvent(new DeleteLocationDomainEvent(Id));
         }
 
         public void AddUtility(string name, int price)

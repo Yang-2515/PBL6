@@ -11,5 +11,6 @@ namespace Booking.Domain.Interfaces.Repositories.Locations
     {
         Task<Location> GetAsync(int id);
         Task<bool> AnyAsync(int id);
+        Task<bool> IsOwnerAsync(int id, string businessId);
     }
 }

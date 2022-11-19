@@ -24,5 +24,10 @@ namespace Booking.Infrastructure.Data.Repositories.Locations
         {
             return await GetAsync(_ => _.Id == id && !_.IsDelete);
         }
+
+        public async Task<bool> IsOwnerAsync(int id, string businessId)
+        {
+            return await AnyAsync(_ => _.Id == id && !_.IsDelete && _.BusinessId == businessId);
+        }
     }
 }

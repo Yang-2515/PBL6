@@ -11,16 +11,7 @@ namespace Booking.Domain.Entities
         public Review(int rating
                       , string comment
                       , string imgUrl
-                      , int userId
-                      , int roomId)
-        {
-            Update(rating, comment, imgUrl, userId, roomId);
-        }
-        
-        public void Update(int rating
-                      , string comment
-                      , string imgUrl
-                      , int userId
+                      , string userId
                       , int roomId)
         {
             Rating = rating;
@@ -28,6 +19,16 @@ namespace Booking.Domain.Entities
             ImgUrl = imgUrl;
             UserId = userId;
             RoomId = roomId;
+        }
+        
+        public void Update(int rating
+                      , string comment
+                      , string imgUrl)
+        {
+            Rating = rating;
+            Comment = comment;
+            ImgUrl = imgUrl;
+            UpdateOn = DateTime.UtcNow;
         }
 
     }
