@@ -1,6 +1,7 @@
 ﻿using Booking.API.Services;
 using Booking.API.ViewModel.Locations.Request;
 using Booking.API.ViewModel.Locations.Response;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,12 @@ namespace Booking.API.Controllers
     public class LocationController : ControllerBase
     {
         private readonly LocationService _locationService;
-        public LocationController(LocationService locationService)
+        private readonly PhotoService _photoService;
+        public LocationController(LocationService locationService
+            , PhotoService photoService)
         {
             _locationService = locationService;
+            _photoService = photoService;
         }
         [HttpGet("cities")]
         public async Task<List<LocationResponse>> GetCities()
@@ -75,6 +79,11 @@ namespace Booking.API.Controllers
         public async Task<List<UtilityResponse>> GetUtilities([FromRoute] int id)
         {
             return await _locationService.GetUtilitiesAsync(id);
+        }
+        [HttpPost("test")]
+        public async Task<string> ImageUpload(IFormFile file)
+        {
+            return await _photoService.AddItemPhotoAsync(file);
         }
     }
 }

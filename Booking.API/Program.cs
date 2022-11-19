@@ -18,6 +18,7 @@ var configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables().Build();
 
 configuration.GetSection("AppSettings").Get<AppSettings>(options => options.BindNonPublicProperties = true);
+configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>(options => options.BindNonPublicProperties = true);
 
 //var hcBuilder = builder.Services.AddHealthChecks();
 
