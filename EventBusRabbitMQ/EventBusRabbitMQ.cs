@@ -53,12 +53,12 @@ namespace EventBusRabbitMQ
             channel.ExchangeDeclare(exchange: BROKER_NAME,
                                     type: "direct",
                                     durable: true,
-                                    autoDelete: true);
+                                    autoDelete: false);
 
             channel.QueueDeclare(queue: _queueName,
                                     durable: true,
                                     exclusive: false,
-                                    autoDelete: true,
+                                    autoDelete: false,
                                     arguments: null);
 
             channel.CallbackException += (sender, ea) =>
@@ -176,7 +176,7 @@ namespace EventBusRabbitMQ
             using var channel = _persistentConnection.CreateModel();
             _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
-            channel.ExchangeDeclare(exchange: BROKER_NAME, durable: true, autoDelete: true, type: "direct");
+            channel.ExchangeDeclare(exchange: BROKER_NAME, durable: true, autoDelete: false, type: "direct");
 
             var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
             {
