@@ -10,6 +10,7 @@ namespace Booking.API.Controllers
 {
     [ApiController]
     [Route("api/booking/locations")]
+    [Authorize]
     public class LocationController : ControllerBase
     {
         private readonly LocationService _locationService;
