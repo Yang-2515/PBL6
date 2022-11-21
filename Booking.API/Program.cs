@@ -21,7 +21,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("MyCronJob-trigger")
-        .WithCronSchedule("* 0/5 * * * ?"));
+        .WithCronSchedule("* * 0/12 * * ?"));
 
 });
 
