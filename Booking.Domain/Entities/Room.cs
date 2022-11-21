@@ -11,6 +11,7 @@ namespace Booking.Domain.Entities
         public int Price { get; private set; }
         public bool IsActive { get; private set; }
         public bool IsBooked { get; private set; }
+        public string? ImgId { get; private set; }
         public DateTime AvailableDay { get; private set; }
         public virtual Location Location { get; private set; }
         public virtual ICollection<Review> Reviews { get; private set; }

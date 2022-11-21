@@ -7,6 +7,7 @@ using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Booking.Domain.Interfaces.Repositories.Rooms;
+using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
@@ -62,7 +63,13 @@ namespace Booking.API.Services
                         break;
                 }
             }
-            return await rooms.Select(new RoomBasicInfoRequest().GetSelection()).ToListAsync();
+            var roomResponses =  await rooms.Select(new RoomBasicInfoRequest().GetSelection()).ToListAsync();
+            foreach (var item in roomResponses)
+            {
+                if (item.ImgId != null)
+                    item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
+            }
+            return roomResponses;
         }
 
         public async Task<List<ReviewResponse>> GetAllReviewAsync(int roomId)
@@ -76,7 +83,8 @@ namespace Booking.API.Services
                                 .ToList();
             foreach (var item in reviews)
             {
-                item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
+                if(item.ImgId != null)
+                    item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
             }
             return reviews;
         }
@@ -90,12 +98,15 @@ namespace Booking.API.Services
             var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
             if(isExistsName)
                 throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
-
+            var uploadFile = new ImageUploadResult();
+            if (request.Img != null)
+                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
             var room = new Room(request.LocationId
                                 , request.Name
-                                , request.BusinessId
+                                , GetCurrentUserId().BusinessId
                                 , request.Capacity
-                                , request.Price);
+                                , request.Price
+                                , uploadFile.PublicId);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
@@ -107,10 +118,13 @@ namespace Booking.API.Services
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
-
-            var uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
+            var uploadFile = new ImageUploadResult();
+            if (request.Img != null)
+                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
             
-            room.AddReview(request.Rating, request.Comment, uploadFile.PublicId, GetCurrentUserId().Id);
+            room.AddReview(request.Rating
+                , request.Comment
+                , uploadFile.PublicId, GetCurrentUserId().Id);
             return await _unitOfWork.SaveChangeAsync();
         }
 

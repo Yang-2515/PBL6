@@ -9,6 +9,7 @@
         public int DistrictId { get; set; }
         public int WardsId { get; set; }
         public bool IsActive { get; set; }
+        public IFormFile? Img { get; set; }
         public List<UtilityRequest> Utilities { get; set; }
     }
 }

@@ -20,7 +20,8 @@ namespace Booking.API.ViewModel.Rooms.Request
 				Id = _.Id,
 				Name = _.Name,
 				Price = _.Price,
-				Capacity = _.Capacity
+				Capacity = _.Capacity,
+				ImgId = _.ImgId,
 			};
 		}
 	}

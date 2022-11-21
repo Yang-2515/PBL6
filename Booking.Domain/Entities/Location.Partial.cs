@@ -9,7 +9,15 @@ namespace Booking.Domain.Entities
 {
     public partial class Location
     {
-        public Location(string name, string description, string address, string businessId, int cityId, int districtId, int wardsId, bool isActive)
+        public Location(string name
+            , string description
+            , string address
+            , string businessId
+            , int cityId
+            , int districtId
+            , int wardsId
+            , bool isActive
+            , string imgId)
         {
             Name = name;
             Description = description;
@@ -19,6 +27,7 @@ namespace Booking.Domain.Entities
             DistrictId = districtId;
             WardsId = wardsId;
             IsActive = isActive;
+            ImgId = imgId;
             Utilitys = new List<Utility>();
             CreateOn = DateTime.UtcNow;
         }

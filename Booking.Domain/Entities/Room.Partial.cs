@@ -17,13 +17,15 @@ namespace Booking.Domain.Entities
                     , string name
                     , string businessId
                     , int capacity
-                    , int price)
+                    , int price
+                    , string? imgId)
         {
             Name = name;
             LocationId = locationId;
             BusinessId = businessId;
             Capacity = capacity;
             Price = price;
+            ImgId = imgId;
         }
 
         public void Update(string name
@@ -37,12 +39,12 @@ namespace Booking.Domain.Entities
 
         public void AddReview(int rating
                               , string comment
-                              , string imgUrl
+                              , string? imgId
                               , string userId)
         {
             Reviews.Add(new Review(rating
                                    , comment
-                                   , imgUrl
+                                   , imgId
                                    , userId
                                    , Id));
         }

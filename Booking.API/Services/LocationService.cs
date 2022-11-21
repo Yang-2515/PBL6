@@ -3,6 +3,7 @@ using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
+using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
@@ -16,13 +17,15 @@ namespace Booking.API.Services
         private readonly ILocationRepository _locationRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUtilityRepository _utilityRepository;
+        private readonly PhotoService _photoService;
         public LocationService(ICityRepository cityRepository
             , IDistrictRepository districtRepository
             , IWardsRepository wardsRepository
             , ILocationRepository locationRepository
             , IUnitOfWork unitOfWork
             , IUtilityRepository utilityRepository
-            , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+            , IHttpContextAccessor httpContextAccessor
+            , PhotoService photoService) : base(httpContextAccessor)
         {
             _cityRepository = cityRepository;
             _districtRepository = districtRepository;
@@ -30,6 +33,7 @@ namespace Booking.API.Services
             _unitOfWork = unitOfWork;
             _locationRepository = locationRepository;
             _utilityRepository = utilityRepository;
+            _photoService = photoService;
         }
 
         public async Task<List<LocationResponse>> GetCitiesAsync()
@@ -58,8 +62,14 @@ namespace Booking.API.Services
 
         public async Task<List<LocationInfoResponse>> GetAllLocationAsync(GetLocationFilterRequest request)
         {
-            return await _locationRepository.GetQuery(request.GetFilter(request))
+            var locations =  await _locationRepository.GetQuery(request.GetFilter(request))
                     .Select(request.GetSelection()).ToListAsync();
+            foreach (var item in locations)
+            {
+                if (item.ImgId != null)
+                    item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
+            }
+            return locations;
         }
         public async Task<LocationInfoResponse> GetLocationAsync(int id)
         {
@@ -77,6 +87,7 @@ namespace Booking.API.Services
                 WardsId = location.WardsId,
                 Wards = location.Wards.Name,
                 IsActive = location.IsActive,
+                ImgUrl = location.ImgId != null ? await _photoService.GetUrlImage(location.ImgId) : null,
                 UtilityResponses = location.Utilitys.Select(_ => new UtilityResponse
                 {
                     Id = _.Id,
@@ -100,6 +111,10 @@ namespace Booking.API.Services
 
         public async Task<int> AddAsync(AddLocationRequest request)
         {
+            var uploadFile = new ImageUploadResult();
+            if (request.Img != null)
+                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
+            
             var location = new Location(request.Name
                 , request.Description
                 , request.Address
@@ -107,7 +122,8 @@ namespace Booking.API.Services
                 , request.CityId
                 , request.DistrictId
                 , request.WardsId
-                , request.IsActive);
+                , request.IsActive
+                , uploadFile.PublicId);
             if (request.Utilities.Any())
             {
                 foreach(var item in request.Utilities)
@@ -125,9 +141,15 @@ namespace Booking.API.Services
         public async Task<List<LocationInfoResponse>> GetLoactionByBusinessAsync(GetLocationInfoByBusinessRequest request)
         {
             request.SetId(GetCurrentUserId().BusinessId);
-            return await _locationRepository.GetQuery(request.GetFilter())
-                        .Select(request.GetSelection())
-                        .ToListAsync();
+            var locations =  await _locationRepository.GetQuery(request.GetFilter())
+                                .Select(request.GetSelection())
+                                .ToListAsync();
+            foreach (var item in locations)
+            {
+                if (item.ImgId != null)
+                    item.ImgUrl = await _photoService.GetUrlImage(item.ImgId);
+            }
+            return locations;
         }
 
         public async Task<int> UpdateAsync(UpdateInfoLocationRequest model)

@@ -13,6 +13,7 @@ namespace Booking.Domain.Entities
         public string Description { get; private set; }
         public string Address { get; private set; }
         public string BusinessId { get; private set; }
+        public string? ImgId { get; private set; }
         public int CityId { get; private set; }
         public int DistrictId { get; private set; }
         public int WardsId { get; private set; }

@@ -26,6 +26,7 @@ namespace Booking.API.ViewModel.Locations.Request
                 WardsId = _.WardsId,
                 Wards = _.Wards.Name,
                 IsActive = _.IsActive,
+                ImgId = _.ImgId,
                 UtilityResponses = _.Utilitys.Select(_ => new UtilityResponse
                 {
                     Id = _.Id,

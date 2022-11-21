@@ -1,4 +1,5 @@
-﻿using Booking.API.IntegrationEvents.EventHandles;
+﻿using Booking.API.CronJob;
+using Booking.API.IntegrationEvents.EventHandles;
 using Booking.API.IntegrationEvents.Events;
 using Booking.API.Services;
 using Booking.Domain.DomainEvents.Locations;
@@ -77,7 +78,8 @@ namespace Booking.API.Extensions
             services.AddScoped<LocationService>();
             services.AddScoped<BookingService>();
             services.AddScoped<RoomService>();
-            services.AddTransient<PhotoService>();
+            services.AddScoped<PhotoService>();
+            services.AddScoped<MyCronJob>();
             return services;
         }
 

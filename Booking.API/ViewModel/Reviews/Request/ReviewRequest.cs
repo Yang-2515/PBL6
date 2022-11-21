@@ -12,7 +12,7 @@ namespace Booking.API.ViewModel.Reviews.Request
             {
                 RoomId = _.RoomId,
                 Comment = _.Comment,
-                ImgId = _.ImgUrl,
+                ImgId = _.ImgId,
                 Rating = _.Rating,
                 UserId = _.UserId
             };
