@@ -1,4 +1,5 @@
-﻿using Booking.API.Extensions;
+﻿using Booking.API.CronJob;
+using Booking.API.Extensions;
 using Booking.API.IntegrationEvents.Events;
 using Booking.Domain.DomainEvents.Locations;
 using Booking.Domain.Interfaces.Repositories;
@@ -81,7 +82,7 @@ namespace Booking.API
 
             services.RegisterRabbitMQ(Configuration);
             services.RegisterEventBus();
-            
+
         }
 
         public void ConfigureEventBus(WebApplication app)

@@ -27,7 +27,7 @@ namespace Booking.API.Controllers
         }
 
         [HttpPost]
-        public async Task<int> CreateRoom([FromBody] AddRoomRequest request)
+        public async Task<int> CreateRoom([FromForm] AddRoomRequest request)
         {
             return await _roomService.CreateAsync(request);
         }

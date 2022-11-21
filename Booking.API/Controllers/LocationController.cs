@@ -70,7 +70,7 @@ namespace Booking.API.Controllers
         }
 
         [HttpPost]
-        public async Task<int> Add([FromBody] AddLocationRequest request)
+        public async Task<int> Add([FromForm] AddLocationRequest request)
         {
             return await _locationService.AddAsync(request);
         }

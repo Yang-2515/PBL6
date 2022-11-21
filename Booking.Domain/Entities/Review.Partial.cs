@@ -10,13 +10,13 @@ namespace Booking.Domain.Entities
     {
         public Review(int rating
                       , string comment
-                      , string imgUrl
+                      , string? imgId
                       , string userId
                       , int roomId)
         {
             Rating = rating;
             Comment = comment;
-            ImgUrl = imgUrl;
+            ImgId = imgId;
             UserId = userId;
             RoomId = roomId;
         }
@@ -27,7 +27,7 @@ namespace Booking.Domain.Entities
         {
             Rating = rating;
             Comment = comment;
-            ImgUrl = imgUrl;
+            ImgId = imgUrl;
             UpdateOn = DateTime.UtcNow;
         }
 

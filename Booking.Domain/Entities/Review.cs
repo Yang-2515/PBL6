@@ -11,7 +11,7 @@ namespace Booking.Domain.Entities
     {
         public int Rating { get; private set; }
         public string Comment { get; private set; }
-        public string ImgUrl { get; private set; }
+        public string? ImgId { get; private set; }
         public string UserId { get; private set; }
         public int RoomId { get; private set; }
         public virtual Room Room { get; private set; }

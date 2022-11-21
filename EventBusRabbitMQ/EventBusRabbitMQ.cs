@@ -53,12 +53,12 @@ namespace EventBusRabbitMQ
             channel.ExchangeDeclare(exchange: BROKER_NAME,
                                     type: "direct",
                                     durable: true,
-                                    autoDelete: true);
+                                    autoDelete: false);
 
             channel.QueueDeclare(queue: _queueName,
                                     durable: true,
                                     exclusive: false,
-                                    autoDelete: true,
+                                    autoDelete: false,
                                     arguments: null);
 
             channel.CallbackException += (sender, ea) =>

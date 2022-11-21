@@ -1,7 +1,9 @@
 using Booking.API;
+using Booking.API.CronJob;
 using Booking.Domain.Models;
 using EventBus.Abstractions;
 using EventBusRabbitMQ;
+using Quartz;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,22 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+    var jobKey = new JobKey("MyCronJob");
+    q.AddJob<MyCronJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("MyCronJob-trigger")
+        .WithCronSchedule("0/5 * * * * ?"));
+
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 builder.Services.AddCors();
 
 var configuration = new ConfigurationBuilder()
