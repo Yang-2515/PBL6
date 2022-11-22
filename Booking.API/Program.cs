@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews()
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
-builder.Services.AddQuartz(q =>
+/*builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionScopedJobFactory();
     var jobKey = new JobKey("MyCronJob");
@@ -20,12 +20,12 @@ builder.Services.AddQuartz(q =>
 
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
-        .WithIdentity("MyCronJob-trigger")
-        .WithCronSchedule("* * */12 * * ?"));
+        .WithIdentity("MyCronJob-trigger")*/
+        //.WithCronSchedule("* * */12 * * ?"));
 
-});
+//});
 
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddCors();
 
