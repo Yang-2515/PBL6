@@ -9,6 +9,6 @@ namespace Booking.API.ViewModel.Rooms.Request
         public int Capacity { get; set; }
         public int Price { get; set; }
         public int LocationId { get; set; }
-        public IFormFile? Img { get; set; }
+        public string? ImgId { get; set; }
     }
 }

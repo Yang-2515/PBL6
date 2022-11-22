@@ -70,7 +70,7 @@ namespace Booking.API.Controllers
         }
 
         [HttpPost]
-        public async Task<int> Add([FromForm] AddLocationRequest request)
+        public async Task<int> Add([FromBody] AddLocationRequest request)
         {
             return await _locationService.AddAsync(request);
         }
@@ -79,11 +79,6 @@ namespace Booking.API.Controllers
         public async Task<List<UtilityResponse>> GetUtilities([FromRoute] int id)
         {
             return await _locationService.GetUtilitiesAsync(id);
-        }
-        [HttpPost("test")]
-        public async Task<ImageUploadResult> ImageUpload(IFormFile file)
-        {
-            return await _photoService.AddItemPhotoAsync(file);
         }
     }
 }

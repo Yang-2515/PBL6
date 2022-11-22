@@ -98,15 +98,13 @@ namespace Booking.API.Services
             var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
             if(isExistsName)
                 throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
-            var uploadFile = new ImageUploadResult();
-            if (request.Img != null)
-                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
+ 
             var room = new Room(request.LocationId
                                 , request.Name
                                 , GetCurrentUserId().BusinessId
                                 , request.Capacity
                                 , request.Price
-                                , uploadFile.PublicId);
+                                , request.ImgId);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
