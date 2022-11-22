@@ -111,10 +111,6 @@ namespace Booking.API.Services
 
         public async Task<int> AddAsync(AddLocationRequest request)
         {
-            var uploadFile = new ImageUploadResult();
-            if (request.Img != null)
-                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
-            
             var location = new Location(request.Name
                 , request.Description
                 , request.Address
@@ -123,7 +119,7 @@ namespace Booking.API.Services
                 , request.DistrictId
                 , request.WardsId
                 , request.IsActive
-                , uploadFile.PublicId);
+                , request.ImgId);
             if (request.Utilities.Any())
             {
                 foreach(var item in request.Utilities)
