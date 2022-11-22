@@ -10,7 +10,7 @@ namespace Booking.API.Controllers
     [ApiController]
     [Route("api/booking/photos")]
     [Authorize]
-    public class PhotoController : Controller
+    public class PhotoController : ControllerBase
     {
         private readonly PhotoService _photoService;
         public PhotoController(PhotoService photoService)
