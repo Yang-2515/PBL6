@@ -29,5 +29,11 @@ namespace Booking.API.Controllers
                 ImgUrl = uploadFile.Url.ToString(),
             };
         }
+
+        [HttpDelete]
+        public async Task Delete([FromBody] DeletePhotoRequest request)
+        {
+            await _photoService.DeleteImage(request.ImgId);
+        }
     }
 }

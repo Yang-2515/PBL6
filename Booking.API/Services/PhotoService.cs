@@ -40,5 +40,10 @@ namespace Booking.API.Services
             return resourceResponse.Url;
         }
 
+        public async Task DeleteImage(string id)
+        {
+            await _cloudinary.DeleteResourcesAsync(id);
+        }
+
     }
 }
