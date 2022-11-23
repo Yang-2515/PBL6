@@ -10,5 +10,6 @@ namespace Booking.Domain.Interfaces.Repositories.Bookings
     public interface IBookingRepository : IGenericRepository<BookingEntity>
     {
         Task<BookingEntity> GetAsync(int id);
+        IQueryable<BookingEntity> GetBookingOutOfDay();
     }
 }

@@ -31,6 +31,12 @@ namespace Booking.Domain.Entities
             FinishDay = finishDate;
             _bookingUtilityRepository.RemoveRange(BookingUtilities);
         }
+
+        public void UpdateStatus(BookingStatus status)
+        {
+            Status = status;
+        }
+
         public void Delete()
         {
             IsDelete = true;
