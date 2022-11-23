@@ -10,7 +10,7 @@ namespace Booking.API.Controllers
 {
     [ApiController]
     [Route("api/booking/locations")]
-    [Authorize]
+    
     public class LocationController : ControllerBase
     {
         private readonly LocationService _locationService;
@@ -46,36 +46,42 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<LocationInfoResponse> GetLocation([FromRoute] int id)
         {
             return await _locationService.GetLocationAsync(id);
         }
 
         [HttpGet("business")]
+        [Authorize]
         public async Task<List<LocationInfoResponse>> GetLocationByBusiness([FromQuery] GetLocationInfoByBusinessRequest request)
         {
             return await _locationService.GetLoactionByBusinessAsync(request);
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<int> Update([FromBody] UpdateInfoLocationRequest request)
         {
             return await _locationService.UpdateAsync(request);
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<int> Delete([FromRoute] int id)
         {
             return await _locationService.DeleteAsync(id);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<int> Add([FromBody] AddLocationRequest request)
         {
             return await _locationService.AddAsync(request);
         }
 
-        [HttpGet("{id:int}/utilities")]        
+        [HttpGet("{id:int}/utilities")]
+        [Authorize]
         public async Task<List<UtilityResponse>> GetUtilities([FromRoute] int id)
         {
             return await _locationService.GetUtilitiesAsync(id);
