@@ -72,6 +72,19 @@ namespace Booking.API.Services
             return roomResponses;
         }
 
+        public async Task<RoomBasicInfoResponse> GetAsync(int id)
+        {
+            var room = await ValidateOnGetRoom(id);
+            return new RoomBasicInfoResponse
+            {
+                Id = room.Id,
+                Name = room.Name,
+                Price = room.Price,
+                Capacity = room.Capacity,
+                ImgId = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
+            };
+        }
+
         public async Task<List<ReviewResponse>> GetAllReviewAsync(int roomId)
         {
             var room = await _roomRepository.GetAsync(roomId);

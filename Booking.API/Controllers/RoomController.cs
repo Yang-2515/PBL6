@@ -44,6 +44,12 @@ namespace Booking.API.Controllers
             return await _roomService.DeleteAsync(id);
         }
 
+        [HttpGet("{id:int}/detail")]
+        public async Task<RoomBasicInfoResponse> GetRoom([FromRoute] int id)
+        {
+            return await _roomService.GetAsync(id);
+        }
+
         #region Review
 
         [HttpGet("{roomId:int}/reviews")]
