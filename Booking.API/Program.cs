@@ -25,7 +25,7 @@ builder.Services.AddQuartz(q =>
 
 });
 
-//builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddCors();
 
