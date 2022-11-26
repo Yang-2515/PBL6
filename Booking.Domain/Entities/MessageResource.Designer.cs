@@ -140,5 +140,14 @@ namespace Booking.Domain.Entities {
                 return ResourceManager.GetString("IsNotValidAvailableDay", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ngày bắt đầu thuế phải lớn hơn thời gian phòng trống.
+        /// </summary>
+        public static string IsNotValidStartDay {
+            get {
+                return ResourceManager.GetString("IsNotValidStartDay", resourceCulture);
+            }
+        }
     }
 }
