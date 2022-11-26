@@ -22,6 +22,7 @@ namespace Booking.API.ViewModel.Rooms.Request
 				Price = _.Price,
 				Capacity = _.Capacity,
 				ImgId = _.ImgId,
+				AvailableDay = _.AvailableDay,
 			};
 		}
 	}

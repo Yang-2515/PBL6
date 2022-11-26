@@ -6,7 +6,6 @@ namespace Booking.API.ViewModel.Reviews.Response
     {
         public int Rating { get; set; }
         public string Comment { get; set; }
-        [JsonIgnore]
         public string? ImgId { get; set; }
         public string? ImgUrl { get; set; }
         public string UserId { get; set; }

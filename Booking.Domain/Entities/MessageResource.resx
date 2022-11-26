@@ -141,4 +141,7 @@
   <data name="IsNotOwnerRoom" xml:space="preserve">
     <value>Bạn không phải là quản trị viên của phòng này</value>
   </data>
+  <data name="IsNotValidAvailableDay" xml:space="preserve">
+    <value>Ngày có thể thuế phải lớn hơn thời gian hiện tại</value>
+  </data>
 </root>

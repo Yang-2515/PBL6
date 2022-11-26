@@ -163,7 +163,8 @@ namespace Booking.API.Services
                 , model.CityId
                 , model.DistrictId
                 , model.WardsId
-                , model.IsActive);
+                , model.IsActive
+                , model.ImgId);
             if (model.Utilities.Any())
             {
                 foreach(var item in model.Utilities)

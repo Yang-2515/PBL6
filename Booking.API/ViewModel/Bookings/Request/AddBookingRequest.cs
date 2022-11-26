@@ -4,7 +4,7 @@
     {
         public int RoomId { get; set; }
         public DateTime StartDay { get; set; }
-        public DateTime FinishDay { get; set; }
+        public int MonthNumber { get; set; }
         public List<BookingUtilityRequest> Utilities { get; set; }
     }
     public class BookingUtilityRequest
