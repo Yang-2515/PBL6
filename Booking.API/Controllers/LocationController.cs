@@ -46,7 +46,6 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [Authorize]
         public async Task<LocationInfoResponse> GetLocation([FromRoute] int id)
         {
             return await _locationService.GetLocationAsync(id);

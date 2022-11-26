@@ -144,4 +144,7 @@
   <data name="IsNotValidAvailableDay" xml:space="preserve">
     <value>Ngày có thể thuế phải lớn hơn thời gian hiện tại</value>
   </data>
+  <data name="IsNotValidStartDay" xml:space="preserve">
+    <value>Ngày bắt đầu thuế phải lớn hơn thời gian phòng trống</value>
+  </data>
 </root>

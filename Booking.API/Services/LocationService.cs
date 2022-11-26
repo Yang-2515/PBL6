@@ -87,6 +87,7 @@ namespace Booking.API.Services
                 WardsId = location.WardsId,
                 Wards = location.Wards.Name,
                 IsActive = location.IsActive,
+                ImgId = location.ImgId,
                 ImgUrl = location.ImgId != null ? await _photoService.GetUrlImage(location.ImgId) : null,
                 UtilityResponses = location.Utilitys.Select(_ => new UtilityResponse
                 {

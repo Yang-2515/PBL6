@@ -36,6 +36,15 @@ namespace Booking.API.Services
                                             .ToListAsync();
         }
 
+        public async Task<int> ApproveAsync(int id)
+        {
+            var booking = await GetBookingAsync(id);
+            //var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
+            booking.UpdateStatus(Domain.BookingStatus.Approved);
+            //push noti
+            return booking.Id;
+        }
+
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync()
         {
             var request = new GetBookingRequest();
@@ -77,7 +86,8 @@ namespace Booking.API.Services
         public async Task<int> AddAsync(AddBookingRequest request)
         {
             var room = await ValidateOnGetRoom(request.RoomId);
-            
+            if (request.StartDay < room.AvailableDay)
+                throw new Exception(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
                     , request.MonthNumber
