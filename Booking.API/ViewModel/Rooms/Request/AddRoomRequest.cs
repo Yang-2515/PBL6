@@ -10,5 +10,6 @@ namespace Booking.API.ViewModel.Rooms.Request
         public int Price { get; set; }
         public int LocationId { get; set; }
         public string? ImgId { get; set; }
+        public DateTime AvailableDay { get; set; }
     }
 }

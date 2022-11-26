@@ -1,7 +1,9 @@
 ﻿using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
+using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Bookings;
+using Booking.Domain.Interfaces.Repositories.Rooms;
 using Microsoft.EntityFrameworkCore;
 using BookingEntity = Booking.Domain.Entities.Booking;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
@@ -12,28 +14,33 @@ namespace Booking.API.Services
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IBookingUtilityRepository _bookingUtilityRepository;
+        private readonly IRoomRepository _roomRepo;
         private readonly IUnitOfWork _unitOfWork;
         public BookingService(IBookingRepository bookingRepository
             , IBookingUtilityRepository bookingUtilityRepository
             , IUnitOfWork unitOfWork
+            , IRoomRepository roomRepo
             , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _bookingRepository = bookingRepository;
             _unitOfWork = unitOfWork;
             _bookingUtilityRepository = bookingUtilityRepository;
+            _roomRepo = roomRepo;
         }
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync()
         {
             var request = new GetBookingRequest();
             return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id))
-                        .Select(request.GetSelection())
-                        .ToListAsync();
+                                            .OrderByDescending(_ => _.CreateOn)
+                                            .Select(request.GetSelection())
+                                            .ToListAsync();
         }
 
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync()
         {
             var request = new GetBookingRequest();
-            return await _bookingRepository.GetQuery(request.GetFilterByBusiness(1))
+            return await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId))
+                        .OrderBy(_ => _.CreateOn)
                         .Select(request.GetSelection())
                         .ToListAsync();
         }
@@ -52,7 +59,7 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(id);
 
-            booking.Update(request.StartDay, request.FinishDay, _bookingUtilityRepository);
+            booking.Update(request.StartDay, request.MonthNumber, _bookingUtilityRepository);
 
             if (request.Utilities.Any())
             {
@@ -69,9 +76,11 @@ namespace Booking.API.Services
 
         public async Task<int> AddAsync(AddBookingRequest request)
         {
+            var room = await ValidateOnGetRoom(request.RoomId);
+            
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
-                    , request.FinishDay
+                    , request.MonthNumber
                     , GetCurrentUserId().Id
                     , GetCurrentUserId().Name
                     , GetCurrentUserId().BusinessId);
@@ -96,6 +105,14 @@ namespace Booking.API.Services
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundBooking);
 
             return booking;
+        }
+
+        public async Task<Room> ValidateOnGetRoom(int roomId)
+        {
+            var room = await _roomRepo.GetAsync(roomId);
+            if (room == null)
+                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+            return room;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Booking.Domain.Entities
 
         public string Id { get; private set; }
         public string Name { get; private set; }
-
+        public string? ImgUrl { get; private set; }
         public string BusinessId { get; private set; }
     }
 }

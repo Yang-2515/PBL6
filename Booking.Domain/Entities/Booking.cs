@@ -14,7 +14,7 @@ namespace Booking.Domain.Entities
         public string UserId { get; private set; }
         public string UserName { get; private set; }
         public DateTime StartDay { get; private set; }
-        public DateTime FinishDay { get; private set; }
+        public int MonthNumber { get; private set; }
         public BookingStatus Status { get; private set; }
         public virtual Room Room { get; private set; }
         public DateTime ApprovedOn { get; private set; }

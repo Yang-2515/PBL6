@@ -13,7 +13,7 @@ namespace Booking.API.ViewModel.Bookings.Request
             return _ => _.UserId == userId && !_.IsDelete;
         }
 
-        public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(int businessId)
+        public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(string businessId)
         {
             return _ => _.BusinessId.Equals(businessId) && !_.IsDelete;
         }
@@ -28,12 +28,11 @@ namespace Booking.API.ViewModel.Bookings.Request
                 RoomId = _.RoomId,
                 RoomName = _.Room.Name,
                 StartDay = _.StartDay,
-                FinishDay = _.FinishDay,
-                Status = _.Status.ToString(),
-                Utilities = _.BookingUtilities.Select(_ => _.Utility)
+                MonthNumber = _.MonthNumber,
+                Status = Enum.GetName(_.Status),
+                Utilities = _.BookingUtilities
                                         .Select(_ => new UtilityResponse
                                         {
-                                            Id = _.Id,
                                             Name = _.Name,
                                             Price = _.Price
                                         }).ToList()

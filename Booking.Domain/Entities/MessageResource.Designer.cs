@@ -131,5 +131,14 @@ namespace Booking.Domain.Entities {
                 return ResourceManager.GetString("IsNotOwnerRoom", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ngày có thể thuế phải lớn hơn thời gian hiện tại.
+        /// </summary>
+        public static string IsNotValidAvailableDay {
+            get {
+                return ResourceManager.GetString("IsNotValidAvailableDay", resourceCulture);
+            }
+        }
     }
 }

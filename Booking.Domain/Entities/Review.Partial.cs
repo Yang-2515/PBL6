@@ -23,11 +23,11 @@ namespace Booking.Domain.Entities
         
         public void Update(int rating
                       , string comment
-                      , string imgUrl)
+                      , string? imgId)
         {
             Rating = rating;
             Comment = comment;
-            ImgId = imgUrl;
+            ImgId = imgId;
             UpdateOn = DateTime.UtcNow;
         }
 

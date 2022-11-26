@@ -81,7 +81,9 @@ namespace Booking.API.Services
                 Name = room.Name,
                 Price = room.Price,
                 Capacity = room.Capacity,
-                ImgId = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
+                AvailableDay = room.AvailableDay,
+                ImgId = room.ImgId,
+                ImgUrl = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
             };
         }
 
@@ -104,10 +106,12 @@ namespace Booking.API.Services
 
         public async Task<int> CreateAsync(AddRoomRequest request)
         {
+            if (request.AvailableDay.Day < DateTime.UtcNow.Day)
+                throw new BadHttpRequestException(ErrorMessages.IsNotValidAvailableDay);
+
             var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
             if (!isOwner)
                 throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
-
             var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
             if(isExistsName)
                 throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
@@ -129,13 +133,10 @@ namespace Booking.API.Services
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
-            var uploadFile = new ImageUploadResult();
-            if (request.Img != null)
-                uploadFile = await _photoService.AddItemPhotoAsync(request.Img);
             
             room.AddReview(request.Rating
                 , request.Comment
-                , uploadFile.PublicId, GetCurrentUserId().Id);
+                , request.ImgId, GetCurrentUserId().Id);
             return await _unitOfWork.SaveChangeAsync();
         }
 
@@ -145,7 +146,7 @@ namespace Booking.API.Services
             if (review.UserId != GetCurrentUserId().Id)
                 throw new BadHttpRequestException(ErrorMessages.IsNotOwnerReview);
 
-            review.Update(request.Rating, request.Comment, request.ImgUrl);
+            review.Update(request.Rating, request.Comment, request.ImgId);
             return await _unitOfWork.SaveChangeAsync();
         }
 

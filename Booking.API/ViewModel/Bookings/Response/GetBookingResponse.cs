@@ -8,7 +8,7 @@ namespace Booking.API.ViewModel.Bookings.Response
         public string UserId { get; set; }
         public string UserName { get; set; }
         public DateTime StartDay { get; set; }
-        public DateTime FinishDay { get; set; }
+        public int MonthNumber { get; set; }
         public string Status { get; set; }
         public int RoomId { get; set; }
         public string RoomName { get; set; }

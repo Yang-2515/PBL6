@@ -26,6 +26,7 @@ namespace Booking.Domain.Entities
             Capacity = capacity;
             Price = price;
             ImgId = imgId;
+            CreateOn = DateTime.UtcNow;
         }
 
         public void Update(string name
@@ -37,6 +38,7 @@ namespace Booking.Domain.Entities
             Capacity = capacity;
             Price = price;
             ImgId = imgId;
+            UpdateOn = DateTime.UtcNow;
         }
 
         public void AddReview(int rating

@@ -32,7 +32,7 @@ namespace Booking.Domain.Entities
             CreateOn = DateTime.UtcNow;
         }
 
-        public void UpdateInfo(string name, string description, string address, int cityId, int districtId, int wardsId, bool isActive)
+        public void UpdateInfo(string name, string description, string address, int cityId, int districtId, int wardsId, bool isActive, string? imgId)
         {
             Name = name;
             Description = description;
@@ -41,6 +41,7 @@ namespace Booking.Domain.Entities
             DistrictId = districtId;
             WardsId = wardsId;
             IsActive = isActive;
+            ImgId = imgId;
             UpdateOn = DateTime.UtcNow;
             Utilitys.Clear();
         }

@@ -9,15 +9,16 @@ namespace Booking.Domain.Entities
 {
     public partial class Booking
     {
-        public Booking(int roomId, DateTime startDay, DateTime finishDay, string userId, string userName, string businessId)        {
+        public Booking(int roomId, DateTime startDay, int monthNumber, string userId, string userName, string businessId)        {
             RoomId = roomId;
             StartDay = startDay;
-            FinishDay = finishDay;
+            MonthNumber = monthNumber;
             UserId = userId;
             UserName = userName;
             BusinessId = businessId;
             Status = BookingStatus.Pending;
             BookingUtilities = new List<BookingUtility>();
+            CreateOn = DateTime.UtcNow;
         }
 
         public void AddUtility(int utilityId, string name, int price)
@@ -25,11 +26,12 @@ namespace Booking.Domain.Entities
             BookingUtilities.Add(new BookingUtility(Id, utilityId, name, price));
         }
 
-        public void Update(DateTime startDate, DateTime finishDate, IBookingUtilityRepository _bookingUtilityRepository)
+        public void Update(DateTime startDate, int monthNumber, IBookingUtilityRepository _bookingUtilityRepository)
         {
             StartDay = startDate;
-            FinishDay = finishDate;
+            MonthNumber = monthNumber;
             _bookingUtilityRepository.RemoveRange(BookingUtilities);
+            UpdateOn = DateTime.UtcNow;
         }
 
         public void UpdateStatus(BookingStatus status)

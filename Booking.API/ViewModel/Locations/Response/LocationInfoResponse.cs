@@ -15,7 +15,6 @@ namespace Booking.API.ViewModel.Locations.Response
         public int WardsId { get; set; }
         public string Wards { get; set; }
         public bool IsActive { get; set; }
-        [JsonIgnore]
         public string? ImgId { get; set; }
         public string? ImgUrl { get; set; }
         public List<UtilityResponse> UtilityResponses { get; set; }
