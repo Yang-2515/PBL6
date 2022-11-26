@@ -159,9 +159,10 @@ namespace Booking.API.Services
             if (room.BusinessId != GetCurrentUserId().BusinessId)
                 throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
 
-            room.Update( request.Name != null ? request.Name : room.Name
-                        , request.Capacity.HasValue ? request.Capacity.Value : room.Capacity
-                        , request.Price.HasValue ? request.Price.Value : room.Price);
+            room.Update( request.Name
+                        ,request.Capacity
+                        , request.Price
+                        , request.ImgId);
             await _roomRepository.UpdateAsync(room);
             return await _unitOfWork.SaveChangeAsync();
         }

@@ -30,11 +30,13 @@ namespace Booking.Domain.Entities
 
         public void Update(string name
                            , int capacity
-                           , int price)
+                           , int price
+                           , string imgId)
         {
             Name = name;
             Capacity = capacity;
             Price = price;
+            ImgId = imgId;
         }
 
         public void AddReview(int rating
