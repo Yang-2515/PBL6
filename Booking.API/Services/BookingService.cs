@@ -39,10 +39,18 @@ namespace Booking.API.Services
         public async Task<int> ApproveAsync(int id)
         {
             var booking = await GetBookingAsync(id);
-            //var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
+            var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
+            /*if(isExistsApprovedBooking)
+                throw new BadHttpRequestException(ErrorMessages.)*/
+            
             booking.UpdateStatus(Domain.BookingStatus.Approved);
             //push noti
             return booking.Id;
+        }
+
+        public async Task<bool> CheckExistsApprovedBooking(int roomId)
+        {
+            return await _bookingRepository.AnyAsync(_ => _.RoomId == roomId && _.Status == Domain.BookingStatus.Approved && !_.IsDelete);
         }
 
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync()
