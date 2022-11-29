@@ -9,6 +9,8 @@ namespace Booking.API.ViewModel.Reviews.Response
         public string? ImgId { get; set; }
         public string? ImgUrl { get; set; }
         public string UserId { get; set; }
+        public string AvatarId { get; set; }
+        public string AvatarUrl { get; set; }
         public int RoomId { get; set; }
     }
 }

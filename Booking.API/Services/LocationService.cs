@@ -3,7 +3,6 @@ using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
-using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
