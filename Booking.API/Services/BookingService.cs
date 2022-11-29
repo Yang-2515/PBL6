@@ -1,9 +1,11 @@
-﻿using Booking.API.ViewModel.Bookings.Request;
+﻿using Booking.API.IntegrationEvents.Events;
+using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Bookings;
 using Booking.Domain.Interfaces.Repositories.Rooms;
+using EventBus.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using BookingEntity = Booking.Domain.Entities.Booking;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
@@ -16,16 +18,22 @@ namespace Booking.API.Services
         private readonly IBookingUtilityRepository _bookingUtilityRepository;
         private readonly IRoomRepository _roomRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventBus _eventBus;
+        private readonly ILogger<BookingService> _logger;
         public BookingService(IBookingRepository bookingRepository
             , IBookingUtilityRepository bookingUtilityRepository
             , IUnitOfWork unitOfWork
             , IRoomRepository roomRepo
+            , IEventBus eventBus
+            , ILogger<BookingService> logger
             , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _bookingRepository = bookingRepository;
             _unitOfWork = unitOfWork;
             _bookingUtilityRepository = bookingUtilityRepository;
             _roomRepo = roomRepo;
+            _eventBus = eventBus;
+            _logger = logger;
         }
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync()
         {
@@ -40,11 +48,18 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(id);
             var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
-            /*if(isExistsApprovedBooking)
-                throw new BadHttpRequestException(ErrorMessages.)*/
+            if (isExistsApprovedBooking)
+                throw new BadHttpRequestException(ErrorMessages.IsExistsApprovedBooking);
             
             booking.UpdateStatus(Domain.BookingStatus.Approved);
             //push noti
+            return booking.Id;
+        }
+
+        public async Task<int> RejectAsync(int id)
+        {
+            var booking = await GetBookingAsync(id);
+            booking.UpdateStatus(Domain.BookingStatus.Reject);
             return booking.Id;
         }
 
@@ -131,6 +146,30 @@ namespace Booking.API.Services
             if (room == null)
                 throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
             return room;
+        }
+
+        public async Task PaymentSuccess(int roomId, int bookingId)
+        {
+            var booking = await GetBookingAsync(bookingId);
+            var room = await ValidateOnGetRoom(roomId);
+            var bookings = await _bookingRepository.GetQuery(_ => _.RoomId == roomId && _.Status == Domain.BookingStatus.Pending && !_.IsDelete).ToListAsync();
+            foreach (var item in bookings)
+            {
+                item.UpdateStatus(Domain.BookingStatus.Reject);   
+            }
+            room.HandleBookingSuccess(booking.MonthNumber);
+            var paymentSuccessEvent = new PaymentSuccessIntegrationEvent(GetCurrentUserId().Id, room.BusinessId);
+            
+            try
+            {
+                _eventBus.Publish(paymentSuccessEvent);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR Publishing integration event: PaymentSuccess");
+
+                throw;
+            }
         }
     }
 }
