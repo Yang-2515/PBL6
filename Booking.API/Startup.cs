@@ -66,7 +66,7 @@ namespace Booking.API
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.SecretKey)),
 
@@ -90,7 +90,8 @@ namespace Booking.API
             var eventBus = app.Services.GetRequiredService<IEventBus>();
 
             eventBus.Subscribe<UserCreatedIntergrationEvent, IIntegrationEventHandler<UserCreatedIntergrationEvent>>();
-            //eventBus.Subscribe<UserUpdatedIntergrationEvent, IIntegrationEventHandler<UserUpdatedIntergrationEvent>>();
+            eventBus.Subscribe<UpdateUserIntegrationEvent, IIntegrationEventHandler<UpdateUserIntegrationEvent>>();
+            eventBus.Subscribe<DeleteUserIntegrationEvent, IIntegrationEventHandler<DeleteUserIntegrationEvent>>();
         }
     }
 }

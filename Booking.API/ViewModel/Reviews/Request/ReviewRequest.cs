@@ -10,6 +10,7 @@ namespace Booking.API.ViewModel.Reviews.Request
         {
             return _ => new ReviewResponse
             {
+                Id = _.Id,
                 RoomId = _.RoomId,
                 Comment = _.Comment,
                 ImgId = _.ImgId,
