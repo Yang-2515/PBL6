@@ -14,7 +14,9 @@ namespace Booking.API.ViewModel.Reviews.Request
                 Comment = _.Comment,
                 ImgId = _.ImgId,
                 Rating = _.Rating,
-                UserId = _.UserId
+                UserId = _.UserId,
+                Name = _.UserName,
+                Avatar = _.Avatar,
             };
         }
     }

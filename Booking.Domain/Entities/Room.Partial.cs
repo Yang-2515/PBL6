@@ -44,13 +44,16 @@ namespace Booking.Domain.Entities
         public void AddReview(int rating
                               , string comment
                               , string? imgId
-                              , string userId)
+                              , string userId
+                              , string name
+                              , string? avatar)
         {
             Reviews.Add(new Review(rating
                                    , comment
                                    , imgId
                                    , userId
-                                   , Id));
+                                   , name
+                                   , avatar));
         }
 
         public void RemoveReview(Review review)

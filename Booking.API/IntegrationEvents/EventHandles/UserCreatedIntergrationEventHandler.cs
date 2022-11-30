@@ -26,7 +26,7 @@ namespace Booking.API.IntegrationEvents.EventHandles
             try
             {
                 await _unitOfWork.BeginTransaction();
-                var user = new User(@event.Id.ToString(), @event.Name, @event.Email);
+                var user = new User(@event.Id.ToString(), @event.Name, @event.Email, "");
                 _logger.LogInformation("Create new user");
                 await _userRepository.InsertAsync(user);
                 await _unitOfWork.CommitTransaction();

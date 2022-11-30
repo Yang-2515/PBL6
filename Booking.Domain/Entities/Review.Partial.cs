@@ -8,17 +8,23 @@ namespace Booking.Domain.Entities
 {
     public partial class Review
     {
+        public Review()
+        {
+
+        }
         public Review(int rating
                       , string comment
                       , string? imgId
                       , string userId
-                      , int roomId)
+                      , string name
+                      , string? avatar)
         {
             Rating = rating;
             Comment = comment;
             ImgId = imgId;
             UserId = userId;
-            RoomId = roomId;
+            UserName = name;
+            Avatar = avatar;
         }
         
         public void Update(int rating

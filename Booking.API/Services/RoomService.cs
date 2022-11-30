@@ -136,7 +136,10 @@ namespace Booking.API.Services
             
             room.AddReview(request.Rating
                 , request.Comment
-                , request.ImgId, GetCurrentUserId().Id);
+                , request.ImgId
+                , GetCurrentUserId().Id
+                , GetCurrentUserId().Name
+                , GetCurrentUserId().Avatar);
             return await _unitOfWork.SaveChangeAsync();
         }
 
