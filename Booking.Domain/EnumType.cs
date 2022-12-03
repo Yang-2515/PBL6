@@ -17,6 +17,7 @@ namespace Booking.Domain
     {
         Pending = 1,
         Approved = 2,
-        Reject = 3
+        Reject = 3,
+        Success = 4
     }
 }

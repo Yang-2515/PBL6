@@ -5,6 +5,7 @@ using Booking.API.ViewModel.Rooms.Response;
 using Booking.Domain;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
+using Booking.Domain.Interfaces.Repositories.Bookings;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Booking.Domain.Interfaces.Repositories.Rooms;
 using CloudinaryDotNet.Actions;
@@ -20,19 +21,22 @@ namespace Booking.API.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly PhotoService _photoService;
+        private readonly IBookingRepository _bookingRepo;
 
         public RoomService(IRoomRepository roomRepository
                           , ILocationRepository locationRepository
                           , IReviewRepository reviewRepository
                           , IUnitOfWork unitOfWork
                           , IHttpContextAccessor httpContextAccessor
-                          , PhotoService photoService) : base(httpContextAccessor)
+                          , PhotoService photoService
+                          , IBookingRepository bookingRepo) : base(httpContextAccessor)
         {
             _roomRepository = roomRepository;
             _locationRepository = locationRepository;
             _reviewRepository = reviewRepository;
             _unitOfWork = unitOfWork;
             _photoService = photoService;
+            _bookingRepo = bookingRepo;
         }
         public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
         {
@@ -174,6 +178,9 @@ namespace Booking.API.Services
         public async Task<int> DeleteAsync(int roomId)
         {
             var room = await ValidateOnGetRoom(roomId);
+            var isHired = await _bookingRepo.IsHiredAsync(roomId);
+            if(isHired)
+                throw new BadHttpRequestException(ErrorMessages.RoomIsHired);
             if (room.BusinessId != GetCurrentUserId().BusinessId)
                 throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
             room.Remove();
