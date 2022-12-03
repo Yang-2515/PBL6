@@ -79,7 +79,7 @@ namespace Booking.API.Extensions
             services.AddScoped<BookingService>();
             services.AddScoped<RoomService>();
             services.AddScoped<PhotoService>();
-            services.AddScoped<MyCronJob>();
+            services.AddScoped<BookingOutOfDayJob>();
             services.AddScoped<RemindPaymentDailyJob>();
             return services;
         }

@@ -18,9 +18,9 @@ builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionScopedJobFactory();
     var jobKey = new JobKey("MyCronJob");
-    q.AddJob<MyCronJob>(opts => opts.WithIdentity(jobKey));
+    q.AddJob<BookingOutOfDayJob>(opts => opts.WithIdentity(jobKey));
     q.AddJob<RemindPaymentDailyJob>(opts => opts.WithIdentity("RemindPayment"));
-    q.AddJob<ExtendDueBooking>(opts => opts.WithIdentity("ExtendDueBooking"));
+    q.AddJob<ExtendDueBookingJob>(opts => opts.WithIdentity("ExtendDueBooking"));
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("MyCronJob-trigger")

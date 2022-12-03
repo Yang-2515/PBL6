@@ -6,15 +6,15 @@ using Quartz;
 
 namespace Booking.API.CronJob
 {
-    public class ExtendDueBooking : IJob
+    public class ExtendDueBookingJob : IJob
     {
-        private readonly ILogger<ExtendDueBooking> _logger;
+        private readonly ILogger<ExtendDueBookingJob> _logger;
         private readonly INotificationBookingRepository _notiBookingRepo;
         private readonly IBookingRepository _bookingRepo;
         private readonly IUserRepository _userRepo;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ExtendDueBooking(ILogger<ExtendDueBooking> logger
+        public ExtendDueBookingJob(ILogger<ExtendDueBookingJob> logger
             , IUnitOfWork unitOfWork
             , INotificationBookingRepository notiBookingRepo
             , IBookingRepository bookingRepo
