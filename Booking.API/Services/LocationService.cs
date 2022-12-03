@@ -119,7 +119,8 @@ namespace Booking.API.Services
                 , request.DistrictId
                 , request.WardsId
                 , request.IsActive
-                , request.ImgId);
+                , request.ImgId
+                , GetCurrentUserId().Id);
             if (request.Utilities.Any())
             {
                 foreach(var item in request.Utilities)

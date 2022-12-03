@@ -1,6 +1,7 @@
 ﻿using Booking.API.Services;
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
+using Booking.API.ViewModel.Locations.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +58,17 @@ namespace Booking.API.Controllers
         public async Task<int> Reject([FromRoute] int id)
         {
             return await _bookingService.RejectAsync(id);
+        }
+
+        [HttpGet("noti")]
+        public async Task<List<NotiResponse>> GetNotiBookingByUser()
+        {
+            return await _bookingService.GetNotiBookingByUserAsync();
+        }
+        [HttpPut("test/room/{roomId:int}/booking/{bookingId:int}")]
+        public async Task Test([FromRoute] int roomId, [FromRoute] int bookingId)
+        {
+          await _bookingService.PaymentSuccess(roomId, bookingId);
         }
     }
 }

@@ -18,12 +18,21 @@ namespace Booking.Domain.Entities
             BusinessId = businessId;
             Status = BookingStatus.Pending;
             BookingUtilities = new List<BookingUtility>();
+            NotificationBookings = new List<NotificationBooking>();
             CreateOn = DateTime.UtcNow;
         }
 
         public void AddUtility(int utilityId, string name, int price)
         {
             BookingUtilities.Add(new BookingUtility(Id, utilityId, name, price));
+        }
+
+        public void AddNoti(string userId, string username, string message, string notiToUserId)
+        {
+            NotificationBookings.Add(new NotificationBooking(userId
+                                                            , username
+                                                            , notiToUserId
+                                                            , message));
         }
 
         public void Update(DateTime startDate, int monthNumber, IBookingUtilityRepository _bookingUtilityRepository)

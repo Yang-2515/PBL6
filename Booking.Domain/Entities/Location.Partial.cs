@@ -17,7 +17,8 @@ namespace Booking.Domain.Entities
             , int districtId
             , int wardsId
             , bool isActive
-            , string imgId)
+            , string imgId
+            , string ownerId)
         {
             Name = name;
             Description = description;
@@ -28,6 +29,7 @@ namespace Booking.Domain.Entities
             WardsId = wardsId;
             IsActive = isActive;
             ImgId = imgId;
+            OwnerId = ownerId;
             Utilitys = new List<Utility>();
             CreateOn = DateTime.UtcNow;
         }

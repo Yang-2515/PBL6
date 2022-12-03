@@ -1,4 +1,5 @@
 using Booking.API;
+using Booking.API.Controllers;
 using Booking.API.CronJob;
 using Booking.Domain.Models;
 using EventBus.Abstractions;
@@ -11,6 +12,7 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+builder.Services.AddSignalR();
 
 builder.Services.AddQuartz(q =>
 {
@@ -69,5 +71,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<SignalHub>("/hub");
 
 app.Run();
