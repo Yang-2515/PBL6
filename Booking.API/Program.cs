@@ -19,13 +19,23 @@ builder.Services.AddQuartz(q =>
     q.UseMicrosoftDependencyInjectionScopedJobFactory();
     var jobKey = new JobKey("MyCronJob");
     q.AddJob<MyCronJob>(opts => opts.WithIdentity(jobKey));
-
+    q.AddJob<RemindPaymentDailyJob>(opts => opts.WithIdentity("RemindPayment"));
+    q.AddJob<ExtendDueBooking>(opts => opts.WithIdentity("ExtendDueBooking"));
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("MyCronJob-trigger")
         .WithCronSchedule("0 0 0/3 1/1 * ? *"));
+    q.AddTrigger(opts => opts
+        .ForJob("RemindPayment")
+        .WithIdentity("RemindPayment-trigger")
+        .WithCronSchedule("0 0 0/12 1/1 * ? *"));
+    q.AddTrigger(opts => opts
+        .ForJob("ExtendDueBooking")
+        .WithIdentity("ExtendDueBooking-trigger")
+        .WithCronSchedule("0 0 0/8 1/1 * ? *"));
 
 });
+    
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 

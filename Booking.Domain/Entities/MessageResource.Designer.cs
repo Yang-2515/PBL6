@@ -61,7 +61,7 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tồn tại một booking đã được đồng ý ở phòng này.
+        ///   Looks up a localized string similar to Tồn tại một booking đã được thuê ở phòng này.
         /// </summary>
         public static string IsExistsApprovedBooking {
             get {
@@ -156,6 +156,15 @@ namespace Booking.Domain.Entities {
         public static string IsNotValidStartDay {
             get {
                 return ResourceManager.GetString("IsNotValidStartDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phòng này đang có người thuê.
+        /// </summary>
+        public static string RoomIsHired {
+            get {
+                return ResourceManager.GetString("RoomIsHired", resourceCulture);
             }
         }
     }
