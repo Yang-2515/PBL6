@@ -69,7 +69,8 @@ namespace Booking.Domain.Entities
 
         public void HandleBookingSuccess(int monthNumber)
         {
-            AvailableDay.Value.AddMonths(monthNumber);
+            var dateTime = AvailableDay.Value.AddMonths(monthNumber);
+            AvailableDay = dateTime;
             IsBooked = true;
         }
     }

@@ -19,6 +19,7 @@ namespace Booking.Domain.Entities
         public int WardsId { get; private set; }
         public bool IsActive { get; private set; }
         public virtual Wards Wards { get; private set; }
+        public string OwnerId { get; private set; }
         public virtual ICollection<Room> Rooms { get; private set; }
         public virtual ICollection<Utility> Utilitys { get; private set; }
     }
