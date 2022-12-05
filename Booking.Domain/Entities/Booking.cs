@@ -17,7 +17,7 @@ namespace Booking.Domain.Entities
         public int MonthNumber { get; private set; }
         public BookingStatus Status { get; private set; }
         public virtual Room Room { get; private set; }
-        public DateTime ApprovedOn { get; private set; }
+        public DateTime? ApprovedOn { get; private set; }
         public DateTime? DuePayment { get; private set; }
         public virtual ICollection<BookingUtility> BookingUtilities { get; private set; }   
         public virtual ICollection<NotificationBooking> NotificationBookings { get; private set; }  
