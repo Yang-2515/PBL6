@@ -30,7 +30,7 @@ namespace Booking.API.CronJob
         public async Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("{now} CronJob is working.", DateTime.Now.ToString("T"));
-            var bookings = _bookingRepo.GetBookingOutOfDay().ToList();
+            var bookings = await _bookingRepo.GetBookingOutOfDay();
             foreach (var booking in bookings)
             {
                 booking.UpdateStatus(BookingStatus.Reject);

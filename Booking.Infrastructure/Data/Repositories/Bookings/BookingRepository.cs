@@ -39,11 +39,12 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
                                         && (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays > 4);
         }
 
-        public IQueryable<BookingEntity> GetBookingOutOfDay()
+        public async Task<IEnumerable<BookingEntity>> GetBookingOutOfDay()
         {
-            return GetQuery(_ => !_.IsDelete 
-                            && (DateTime.UtcNow - _.ApprovedOn).TotalDays > 1 
-                            && _.Status == BookingStatus.Approved);
+            var bookings = await GetQuery(_ => !_.IsDelete
+                            && _.Status == BookingStatus.Approved
+                            && _.ApprovedOn.HasValue).ToListAsync();
+            return bookings.Where(_ => (DateTime.UtcNow - _.ApprovedOn.Value).TotalDays > 1);
         }
 
         public async Task<bool> IsHiredAsync(int roomId)
