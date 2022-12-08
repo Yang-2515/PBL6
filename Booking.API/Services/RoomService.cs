@@ -116,7 +116,7 @@ namespace Booking.API.Services
             var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
             if (!isOwner)
                 throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
-            var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
+            var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name, request.LocationId);
             if(isExistsName)
                 throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
  

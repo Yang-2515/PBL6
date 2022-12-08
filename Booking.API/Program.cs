@@ -2,6 +2,7 @@ using Booking.API;
 using Booking.API.Controllers;
 using Booking.API.CronJob;
 using Booking.Domain.Models;
+using Booking.Middleware;
 using EventBus.Abstractions;
 using EventBusRabbitMQ;
 using Quartz;
@@ -79,7 +80,7 @@ app.UseCors(x => x
 app.UseAuthentication();
 
 app.UseAuthorization();
-
+app.UseMiddleware<RequestLoggerMiddleware>();
 app.MapControllers();
 app.MapHub<SignalHub>("/hub");
 
