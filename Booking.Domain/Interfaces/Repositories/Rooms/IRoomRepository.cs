@@ -11,6 +11,6 @@ namespace Booking.Domain.Interfaces.Repositories.Rooms
             , int? fromPrice
             , int? toPrice);
         Task<Room> GetAsync(int roomId);
-        Task<bool> IsExistsNameRoom(string name);
+        Task<bool> IsExistsNameRoom(string name, int locationId);
     }
 }

@@ -56,9 +56,9 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
                             );
         }
 
-        public async Task<bool> IsExistsNameRoom(string name)
+        public async Task<bool> IsExistsNameRoom(string name, int locationId)
         {
-            return await AnyAsync(_ => _.Name == name && !_.IsDelete);
+            return await AnyAsync(_ => _.Name == name && _.LocationId == locationId && !_.IsDelete);
         }
     }
 }
