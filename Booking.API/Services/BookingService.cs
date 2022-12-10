@@ -1,4 +1,5 @@
-﻿using Booking.API.IntegrationEvents.Events;
+﻿using Booking.API.Extensions;
+using Booking.API.IntegrationEvents.Events;
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
 using Booking.API.ViewModel.Locations.Response;
@@ -72,7 +73,7 @@ namespace Booking.API.Services
             var booking = await GetBookingAsync(id);
             var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
             if (isExistsApprovedBooking)
-                throw new BadHttpRequestException(ErrorMessages.IsExistsApprovedBooking);
+                throw new BadRequestException(ErrorMessages.IsExistsApprovedBooking);
             
             booking.UpdateStatus(Domain.BookingStatus.Approved);
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã đồng ý yêu cầu thuê phòng", booking.UserId);
@@ -138,7 +139,7 @@ namespace Booking.API.Services
         {
             var room = await ValidateOnGetRoom(request.RoomId);
             if (request.StartDay < room.AvailableDay)
-                throw new BadHttpRequestException(ErrorMessages.IsNotValidStartDay);
+                throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
                     , request.MonthNumber
@@ -153,6 +154,7 @@ namespace Booking.API.Services
                 }
             }
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã tạo yêu cầu thuê phòng", room.Location.OwnerId);
+            await SendMessageToFirebase(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã tạo yêu cầu thuê phòng", room.Location.OwnerId);
             await _bookingRepository.InsertAsync(booking);
             await _unitOfWork.SaveChangeAsync();
 
@@ -163,7 +165,7 @@ namespace Booking.API.Services
         {
             var booking = await _bookingRepository.GetAsync(id);
             if (booking == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundBooking);
+                throw new BadRequestException(ErrorMessages.IsNotFoundBooking);
 
             return booking;
         }
@@ -172,7 +174,7 @@ namespace Booking.API.Services
         {
             var room = await _roomRepo.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
             return room;
         }
 

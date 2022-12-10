@@ -1,4 +1,5 @@
-﻿using Booking.API.ViewModel.Locations.Request;
+﻿using Booking.API.Extensions;
+using Booking.API.ViewModel.Locations.Request;
 using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
@@ -155,7 +156,7 @@ namespace Booking.API.Services
 
             if (location.BusinessId != GetCurrentUserId().BusinessId)
             {
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerLocation);
             }
 
             location.UpdateInfo(model.Name
@@ -185,7 +186,7 @@ namespace Booking.API.Services
 
             if (location.BusinessId != GetCurrentUserId().BusinessId)
             {
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerLocation);
             }
 
             location.Remove();
@@ -197,7 +198,7 @@ namespace Booking.API.Services
         {
             var location = await _locationRepository.GetAsync(id);
             if (location == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
+                throw new BadRequestException(ErrorMessages.IsNotFoundLocation);
 
             return location;
         }
@@ -205,7 +206,7 @@ namespace Booking.API.Services
         public async Task ValidateOnGetLocationAsync(int id)
         {
             if (!await _locationRepository.AnyAsync(id))
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
+                throw new BadRequestException(ErrorMessages.IsNotFoundLocation);
         }
     }
 }
