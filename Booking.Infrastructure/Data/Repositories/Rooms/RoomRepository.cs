@@ -35,7 +35,8 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
             , int? fromPrice
             , int? toPrice)
         {
-            return GetQuery(_ => (name == null
+            return GetQuery(_ => !_.IsDelete
+                                 && (name == null
                                    || _.Name.ToLower().Contains(name.ToLower())
                                  )
                                  && (!locationId.HasValue 
