@@ -138,7 +138,7 @@ namespace Booking.API.Services
         {
             var room = await ValidateOnGetRoom(request.RoomId);
             if (request.StartDay < room.AvailableDay)
-                throw new Exception(ErrorMessages.IsNotValidStartDay);
+                throw new BadHttpRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
                     , request.MonthNumber
