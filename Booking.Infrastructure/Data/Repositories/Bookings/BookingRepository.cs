@@ -49,9 +49,10 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
 
         public async Task<bool> IsHiredAsync(int roomId)
         {
-            return await AnyAsync(_ => !_.IsDelete
-                            && _.Room.AvailableDay >= DateTime.UtcNow
-                            && _.Status == BookingStatus.Success);
+            var bookings = await GetQuery(_ => !_.IsDelete
+                            && _.Room.AvailableDay.HasValue).ToListAsync();
+            return bookings.Where(_ => _.Room.AvailableDay >= DateTime.UtcNow
+                            && _.Status == BookingStatus.Success).Any();
         }
     }
 }
