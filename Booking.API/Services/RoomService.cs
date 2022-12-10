@@ -171,7 +171,8 @@ namespace Booking.API.Services
             room.Update( request.Name
                         ,request.Capacity
                         , request.Price
-                        , request.ImgId);
+                        , request.ImgId
+                        , request.AvailableDay);
             await _roomRepository.UpdateAsync(room);
             return await _unitOfWork.SaveChangeAsync();
         }

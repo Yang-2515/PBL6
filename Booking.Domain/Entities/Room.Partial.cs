@@ -34,12 +34,14 @@ namespace Booking.Domain.Entities
         public void Update(string name
                            , int capacity
                            , int price
-                           , string imgId)
+                           , string imgId
+                           , DateTime? availableDay)
         {
             Name = name;
             Capacity = capacity;
             Price = price;
             ImgId = imgId;
+            AvailableDay = availableDay;
             UpdateOn = DateTime.UtcNow;
         }
 
