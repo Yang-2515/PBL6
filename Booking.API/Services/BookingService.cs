@@ -176,13 +176,13 @@ namespace Booking.API.Services
             return room;
         }
 
-        public async Task FirstPaymentSuccess(int roomId, int bookingId)
+        public async Task FirstPaymentSuccess(int bookingId)
         {
             var booking = await GetBookingAsync(bookingId);
             booking.UpdateStatus(Domain.BookingStatus.Success);
             booking.UpdateDuePayment(1);
-            var room = await ValidateOnGetRoom(roomId);
-            var bookings = await _bookingRepository.GetQuery(_ => _.RoomId == roomId && _.Status == Domain.BookingStatus.Pending && !_.IsDelete).ToListAsync();
+            var room = await ValidateOnGetRoom(booking.RoomId);
+            var bookings = await _bookingRepository.GetQuery(_ => _.RoomId == booking.RoomId && _.Status == Domain.BookingStatus.Pending && !_.IsDelete).ToListAsync();
             foreach (var item in bookings)
             {
                 item.UpdateStatus(Domain.BookingStatus.Reject);
@@ -205,11 +205,11 @@ namespace Booking.API.Services
             }
             await _unitOfWork.SaveChangeAsync();
         }
-        public async Task PaymentSuccess(int roomId, int bookingId)
+        public async Task PaymentSuccess(int bookingId)
         {
             var booking = await GetBookingAsync(bookingId);
             booking.UpdateDuePayment(1);
-            var room = await ValidateOnGetRoom(roomId);
+            var room = await ValidateOnGetRoom(booking.RoomId);
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
             await _unitOfWork.SaveChangeAsync();
         }

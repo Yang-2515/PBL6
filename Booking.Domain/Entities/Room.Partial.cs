@@ -18,7 +18,8 @@ namespace Booking.Domain.Entities
                     , string businessId
                     , int capacity
                     , int price
-                    , string? imgId)
+                    , string? imgId
+                    , DateTime availableDay)
         {
             Name = name;
             LocationId = locationId;
@@ -26,6 +27,7 @@ namespace Booking.Domain.Entities
             Capacity = capacity;
             Price = price;
             ImgId = imgId;
+            AvailableDay = availableDay;
             CreateOn = DateTime.UtcNow;
         }
 

@@ -125,7 +125,8 @@ namespace Booking.API.Services
                                 , GetCurrentUserId().BusinessId
                                 , request.Capacity
                                 , request.Price
-                                , request.ImgId);
+                                , request.ImgId
+                                , request.AvailableDay);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
