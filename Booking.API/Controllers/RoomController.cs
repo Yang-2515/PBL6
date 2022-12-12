@@ -10,7 +10,7 @@ namespace Booking.API.Controllers
 {
     [ApiController]
     [Route("api/booking/rooms")]
-    [Authorize]
+    
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;
@@ -25,19 +25,19 @@ namespace Booking.API.Controllers
         {
             return await _roomService.GetByFilter(locationId, request);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<int> CreateRoom([FromBody] AddRoomRequest request)
         {
             return await _roomService.CreateAsync(request);
         }
-
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<bool> UpdateRoom([FromRoute] int id, [FromBody] UpdateRoomRequest request)
         {
             return await _roomService.UpdateAsync(id, request);
         }
-
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<int> DeleteRoom([FromRoute] int id)
         {
@@ -57,19 +57,19 @@ namespace Booking.API.Controllers
         {
             return await _roomService.GetAllReviewAsync(roomId);
         }
-
+        [Authorize]
         [HttpPost("{roomId:int}/reviews")]
         public async Task<bool> AddReview([FromRoute] int roomId, [FromBody] AddReviewRequest request)
         {
             return await _roomService.AddReviewAsync(roomId, request);
         }
-
+        [Authorize]
         [HttpDelete("{roomId:int}/reviews/{reviewId}")]
         public async Task<bool> DeleteReview([FromRoute] int roomId, [FromRoute] int reviewId)
         {
             return await _roomService.DeleteReviewAsync(roomId, reviewId);
         }
-
+        [Authorize]
         [HttpPut("reviews/{id:int}")]
         public async Task<bool> UpdateReview([FromRoute] int id, [FromBody] UpdateReviewRequest request)
         {
