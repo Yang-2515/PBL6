@@ -76,7 +76,7 @@ namespace Booking.API
 
             services.AddDbContext(Configuration);
             services.AddGenericRepositories();
-            services.AddServices();
+            services.AddServices(Configuration);
             services.AddUnitOfWork();
             services.RegisterMediator();
 

@@ -73,7 +73,7 @@ namespace Booking.API.Extensions
             return services;
         }
 
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<LocationService>();
             services.AddScoped<BookingService>();
@@ -81,6 +81,12 @@ namespace Booking.API.Extensions
             services.AddScoped<PhotoService>();
             services.AddScoped<BookingOutOfDayJob>();
             services.AddScoped<RemindPaymentDailyJob>();
+            services.AddScoped<PaymentService>();
+
+            //services.AddScoped(s =>
+            //{
+            //    return new PaymentService(configuration);
+            //});
             return services;
         }
 
