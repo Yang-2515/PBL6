@@ -13,13 +13,18 @@ namespace Booking.API.ViewModel.Locations.Request
         public int? CityId { get; set; }
         public int? DistrictId { get; set; }
         public int? WardsId { get; set; }
+        public int? MaxPrice { get; set; }
+        public int? MinPrice { get; set; }
 
         public Expression<Func<Location, bool>> GetFilter(GetLocationFilterRequest request)
         {
             return _ => !_.IsDelete
                         && (!request.CityId.HasValue || request.CityId == _.CityId)
                         && (!request.DistrictId.HasValue || request.DistrictId == _.DistrictId)
-                        && (!request.WardsId.HasValue || request.WardsId == _.WardsId);
+                        && (!request.WardsId.HasValue || request.WardsId == _.WardsId)
+                        && (!(request.MaxPrice.HasValue && request.MinPrice.HasValue) || _.Rooms.Any(_ => _.Price <= request.MaxPrice && _.Price >= request.MinPrice))
+                        && (!request.MaxPrice.HasValue || _.Rooms.Any(_ => _.Price <= request.MaxPrice))
+                        && (!request.MinPrice.HasValue || _.Rooms.Any(_ => _.Price >= request.MinPrice));
         }
 
         public Expression<Func<Location, LocationInfoResponse>> GetSelection()
