@@ -22,18 +22,21 @@ namespace Booking.API.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly BookingService _bookingService;
         private SortedList<String, String> _responseData = new SortedList<String, String>(new VnPayCompare());
         public PaymentService(IConfiguration configuration
             , IHttpContextAccessor httpContextAccessor
             , IUnitOfWork unitOfWork
             , IPaymentRepository paymentRepository
-            , IBookingRepository bookingRepository)
+            , IBookingRepository bookingRepository
+            , BookingService bookingService)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
             _paymentRepository = paymentRepository;
             _bookingRepository = bookingRepository;
+            _bookingService = bookingService;
         }
         public async Task<string> Pay(PaymentInfoRequest request)
         {
@@ -224,12 +227,12 @@ namespace Booking.API.Services
                     //Neu da thanh toan cho 1 booking id roi
                     if (isExistPaymentForBooking)
                     {
-                       
+                        await _bookingService.FirstPaymentSuccess(bookingId);
                     }
                     //Neu chua thanh toan cho booking nao ca
                     else
                     {
-
+                        await _bookingService.PaymentSuccess(bookingId);
                     }
 
                     await _unitOfWork.SaveChangeAsync();
