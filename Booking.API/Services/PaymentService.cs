@@ -47,6 +47,13 @@ namespace Booking.API.Services
             {
                 throw new ArgumentNullException("Vui lòng cấu hình các tham số: vnp_TmnCode,vnp_HashSecret trong file web.config");
             }
+            var dateNowTick = DateTime.Now.Ticks.ToString();
+            var paymentCode = "P" + dateNowTick + request.BookingId.ToString();
+            var isPaymentValid = await _paymentRepository.AnyAsync(_ => _.PaymentCode == paymentCode);
+            if (isPaymentValid)
+            {
+                throw new BadHttpRequestException("Da ton tai ma giao dich");
+            }
             //Get payment input
             var booking = await _bookingRepository.GetAsync(request.BookingId);
             if (booking == null)
@@ -62,7 +69,9 @@ namespace Booking.API.Services
             payment.Status = null; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending"
             payment.OrderDesc = request.OrderDesc;
             payment.CreateOn = DateTime.Now;
-            payment.PaymentCode = "P" + DateTime.Now.Ticks.ToString() + request.BookingId.ToString();
+            payment.PaymentCode = paymentCode;
+            
+
             var locale = request.Language;
             //Build URL for VNPAY
             VnPayLibrary vnpay = new VnPayLibrary();
@@ -85,7 +94,7 @@ namespace Booking.API.Services
             vnpay.AddRequestData("vnp_OrderInfo", payment.PaymentCode);
             vnpay.AddRequestData("vnp_OrderType", request.OrderCategory.ToString()); //default value: other
             vnpay.AddRequestData("vnp_ReturnUrl", "http://localhost:5001/api/booking/payment/return");
-            vnpay.AddRequestData("vnp_TxnRef", payment.BookingId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+            vnpay.AddRequestData("vnp_TxnRef", "P" + dateNowTick); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
             //Add Params of 2.1.0 Version
             // 20221210152938
@@ -189,8 +198,9 @@ namespace Booking.API.Services
 
             var paymentConfigInfo = _configuration.GetSection("Payment");
             var vnp_HashSecret = paymentConfigInfo.GetSection("vnp_HashSecret").Value;
-            int orderId = Convert.ToInt32(vnp_TxnRef);
-
+            //int orderId = Convert.ToInt32(vnp_TxnRef);
+            var trtrt = vnp_OrderInfo.Replace(vnp_TxnRef, "");
+            var bookingId = Convert.ToInt32(vnp_OrderInfo.Replace(vnp_TxnRef, ""));
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
             if (checkSignature)
             {
@@ -200,14 +210,34 @@ namespace Booking.API.Services
                     var payment = await _paymentRepository.GetQuery(_ => _.PaymentCode == vnp_OrderInfo).FirstOrDefaultAsync();
                     if (payment == null)
                     {
-                        throw new BadHttpRequestException("Khong tim thay payment")
+                        throw new BadHttpRequestException("Khong tim thay payment");
                     }
+
                     payment.Status = true;
                     payment.TranCode = vnp_TransactionNo;
+                    
+                    var isExistPaymentForBooking = await _paymentRepository.AnyAsync
+                                                    ( _ => 
+                                                        _.BookingId == bookingId
+                                                        && _.Status == true
+                                                    );
+                    //Neu da thanh toan cho 1 booking id roi
+                    if (isExistPaymentForBooking)
+                    {
+                       
+                    }
+                    //Neu chua thanh toan cho booking nao ca
+                    else
+                    {
+
+                    }
+
+                    await _unitOfWork.SaveChangeAsync();
+                    
 
                     Console.WriteLine("Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ");
-                    Console.WriteLine("Thanh toán thành công, OrderId={0}", orderId);
-                    Console.WriteLine("Mã giao dịch thanh toán:" + orderId.ToString());
+                    Console.WriteLine("Thanh toán thành công, BookingId={0}", bookingId);
+                    Console.WriteLine("Mã giao dịch thanh toán:" + vnp_OrderInfo);
                     Console.WriteLine("Số tiền thanh toán (VND):" + vnp_Amount.ToString());
                     Console.WriteLine("Ngân hàng thanh toán:" + vnp_BankCode);
                 }
@@ -218,7 +248,7 @@ namespace Booking.API.Services
                     // payment.Status = 0
 
                     Console.WriteLine("Có lỗi xảy ra trong quá trình xử lý.Mã lỗi: " + vnp_ResponseCode);
-                    Console.WriteLine("Thanh toan loi, OrderId={0},ResponseCode={1}", orderId, vnp_ResponseCode);
+                    Console.WriteLine("Thanh toan loi, BookingId={0},ResponseCode={1}", bookingId, vnp_ResponseCode);
                 }
             }
             else
