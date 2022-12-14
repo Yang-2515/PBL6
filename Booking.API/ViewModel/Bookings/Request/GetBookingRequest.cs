@@ -1,6 +1,7 @@
 ﻿using Booking.API.ViewModel.Bookings.Response;
 using Booking.API.ViewModel.Interfaces;
 using Booking.API.ViewModel.Locations.Response;
+using Booking.Domain;
 using System.Linq.Expressions;
 using BookingEntity = Booking.Domain.Entities.Booking;
 
@@ -8,9 +9,9 @@ namespace Booking.API.ViewModel.Bookings.Request
 {
     public class GetBookingRequest : ISelection<BookingEntity, GetBookingResponse>
     {
-        public Expression<Func<BookingEntity, bool>> GetFilterByUser(string userId)
+        public Expression<Func<BookingEntity, bool>> GetFilterByUser(string userId, BookingStatus status)
         {
-            return _ => _.UserId == userId && !_.IsDelete;
+            return _ => _.UserId == userId && !_.IsDelete && _.Status == status;
         }
 
         public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(string businessId)

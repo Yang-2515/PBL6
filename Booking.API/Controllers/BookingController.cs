@@ -2,6 +2,7 @@
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
 using Booking.API.ViewModel.Locations.Response;
+using Booking.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,9 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("current-user")]
-        public async Task<List<GetBookingResponse>> GetBookingByUser()
+        public async Task<List<GetBookingResponse>> GetBookingByUser([FromQuery] BookingStatus status)
         {
-            return await _bookingService.GetBookingByUserAsync();
+            return await _bookingService.GetBookingByUserAsync(status);
         }
 
         [HttpGet("business")]

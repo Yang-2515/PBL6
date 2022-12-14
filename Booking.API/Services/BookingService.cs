@@ -3,6 +3,7 @@ using Booking.API.IntegrationEvents.Events;
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
 using Booking.API.ViewModel.Locations.Response;
+using Booking.Domain;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Bookings;
@@ -44,10 +45,10 @@ namespace Booking.API.Services
             _eventBus = eventBus;
             _logger = logger;
         }
-        public async Task<List<GetBookingResponse>> GetBookingByUserAsync()
+        public async Task<List<GetBookingResponse>> GetBookingByUserAsync(BookingStatus status)
         {
             var request = new GetBookingRequest();
-            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id))
+            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, status))
                                             .OrderByDescending(_ => _.CreateOn)
                                             .Select(request.GetSelection())
                                             .ToListAsync();
