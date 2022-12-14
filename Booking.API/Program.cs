@@ -5,6 +5,7 @@ using Booking.Domain.Models;
 using Booking.Middleware;
 using EventBus.Abstractions;
 using EventBusRabbitMQ;
+using Microsoft.AspNetCore.HttpOverrides;
 using Quartz;
 using RabbitMQ.Client;
 
@@ -54,7 +55,10 @@ configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>(options =
 //var hcBuilder = builder.Services.AddHealthChecks();
 
 //hcBuilder.AddRabbitMQ($"amqp://localhost", name: "rabbitmq", tags: new string[] { "rabbitmqbus" });
-
+var forwardingOptions = new ForwardedHeadersOptions() 
+{ 
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.All 
+};
 var startup = new Startup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
@@ -81,6 +85,10 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.UseMiddleware<RequestLoggerMiddleware>();
+app.UseForwardedHeaders(new ForwardedHeadersOptions() 
+{ 
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.All 
+});
 app.MapControllers();
 app.MapHub<SignalHub>("/hub");
 
