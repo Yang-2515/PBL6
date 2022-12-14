@@ -20,5 +20,6 @@ namespace Booking.Domain.Entities
         public DateTime ApprovedOn { get; private set; }
         public virtual ICollection<BookingUtility> BookingUtilities { get; private set; }   
         public virtual ICollection<NotificationBooking> NotificationBookings { get; private set; }  
+        public virtual ICollection<Payment> Payments { get; private set; }
     }
 }

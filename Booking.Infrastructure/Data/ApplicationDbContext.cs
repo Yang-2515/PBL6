@@ -37,6 +37,7 @@ namespace Booking.Infrastructure.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<NotificationBooking> NotificationBookings { get; set; }    
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
