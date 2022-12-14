@@ -16,7 +16,7 @@ namespace Booking.Infrastructure.Data
 
         private IsolationLevel? _isolationLevel;
 
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext? _dbContext;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -51,13 +51,6 @@ namespace Booking.Infrastructure.Data
             return result;
         }
 
-        public void Dispose()
-        {
-            if (_dbContext == null) return;
-
-            _dbContext.Dispose();
-        }
-
         public async Task RollbackTransaction()
         {
             if (_transaction == null) return;
@@ -71,6 +64,19 @@ namespace Booking.Infrastructure.Data
         public async Task<bool> SaveChangeAsync()
         {
             return await _dbContext.SaveEntitiesAsync();
+        }
+
+        public void Dispose()
+        {
+            if (_dbContext == null)
+                return;
+            //
+            // Close connection
+            if (_dbContext.Database.GetDbConnection().State == ConnectionState.Open)
+            {
+                _dbContext.Database.GetDbConnection().Close();
+            }
+            _dbContext.Dispose();
         }
     }
 }
