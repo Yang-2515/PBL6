@@ -35,22 +35,33 @@ namespace Booking.Domain.Entities
                                                             , message));
         }
 
-        public void Update(DateTime startDate, int monthNumber, IBookingUtilityRepository _bookingUtilityRepository)
+        public void Update(int monthNumber)
         {
-            StartDay = startDate;
             MonthNumber = monthNumber;
-            _bookingUtilityRepository.RemoveRange(BookingUtilities);
             UpdateOn = DateTime.UtcNow;
         }
 
         public void UpdateStatus(BookingStatus status)
         {
+            if (status == BookingStatus.Approved)
+                ApprovedOn = DateTime.UtcNow;
             Status = status;
         }
 
         public void Delete()
         {
             IsDelete = true;
+        }
+
+        public void UpdateDuePayment(int? number)
+        {
+            if (number == null)
+                DuePayment = StartDay;
+            else
+            {
+                var datetime = DuePayment.Value.AddMonths(number.Value);
+                DuePayment = datetime;
+            }
         }
     }
 }

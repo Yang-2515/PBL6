@@ -1,10 +1,12 @@
-﻿using Booking.API.ViewModel.Reviews.Request;
+﻿using Booking.API.Extensions;
+using Booking.API.ViewModel.Reviews.Request;
 using Booking.API.ViewModel.Reviews.Response;
 using Booking.API.ViewModel.Rooms.Request;
 using Booking.API.ViewModel.Rooms.Response;
 using Booking.Domain;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
+using Booking.Domain.Interfaces.Repositories.Bookings;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Booking.Domain.Interfaces.Repositories.Rooms;
 using CloudinaryDotNet.Actions;
@@ -20,25 +22,28 @@ namespace Booking.API.Services
         private readonly IReviewRepository _reviewRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly PhotoService _photoService;
+        private readonly IBookingRepository _bookingRepo;
 
         public RoomService(IRoomRepository roomRepository
                           , ILocationRepository locationRepository
                           , IReviewRepository reviewRepository
                           , IUnitOfWork unitOfWork
                           , IHttpContextAccessor httpContextAccessor
-                          , PhotoService photoService) : base(httpContextAccessor)
+                          , PhotoService photoService
+                          , IBookingRepository bookingRepo) : base(httpContextAccessor)
         {
             _roomRepository = roomRepository;
             _locationRepository = locationRepository;
             _reviewRepository = reviewRepository;
             _unitOfWork = unitOfWork;
             _photoService = photoService;
+            _bookingRepo = bookingRepo;
         }
         public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
         {
             var isValidLocation = await ValidLocation(locationId);
             if (!isValidLocation)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundLocation);
+                throw new BadRequestException(ErrorMessages.IsNotFoundLocation);
             var rooms = _roomRepository.GetByFilter(locationId
                                                     , request.Name
                                                     , request.FromCapacity
@@ -91,7 +96,7 @@ namespace Booking.API.Services
         {
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
             var reviews =  room.Reviews
                                 .AsQueryable()
                                 .Select(new ReviewRequest().GetSelection())
@@ -107,21 +112,22 @@ namespace Booking.API.Services
         public async Task<int> CreateAsync(AddRoomRequest request)
         {
             if (request.AvailableDay.Day < DateTime.UtcNow.Day)
-                throw new BadHttpRequestException(ErrorMessages.IsNotValidAvailableDay);
+                throw new BadRequestException(ErrorMessages.IsNotValidAvailableDay);
 
             var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
             if (!isOwner)
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerLocation);
-            var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerLocation);
+            var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name, request.LocationId);
             if(isExistsName)
-                throw new BadHttpRequestException(ErrorMessages.IsExistsNameRoom);
+                throw new BadRequestException(ErrorMessages.IsExistsNameRoom);
  
             var room = new Room(request.LocationId
                                 , request.Name
                                 , GetCurrentUserId().BusinessId
                                 , request.Capacity
                                 , request.Price
-                                , request.ImgId);
+                                , request.ImgId
+                                , request.AvailableDay);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
@@ -132,7 +138,7 @@ namespace Booking.API.Services
         {
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
             
             room.AddReview(request.Rating
                 , request.Comment
@@ -147,7 +153,7 @@ namespace Booking.API.Services
         {
             var review = await ValidateOnGetReview(reviewId);
             if (review.UserId != GetCurrentUserId().Id)
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerReview);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerReview);
 
             review.Update(request.Rating, request.Comment, request.ImgId);
             return await _unitOfWork.SaveChangeAsync();
@@ -158,15 +164,16 @@ namespace Booking.API.Services
             var room = await _roomRepository.GetAsync(_ => _.Id == roomId 
                             && !_.IsDelete);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
 
             if (room.BusinessId != GetCurrentUserId().BusinessId)
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerRoom);
 
             room.Update( request.Name
                         ,request.Capacity
                         , request.Price
-                        , request.ImgId);
+                        , request.ImgId
+                        , request.AvailableDay);
             await _roomRepository.UpdateAsync(room);
             return await _unitOfWork.SaveChangeAsync();
         }
@@ -174,8 +181,11 @@ namespace Booking.API.Services
         public async Task<int> DeleteAsync(int roomId)
         {
             var room = await ValidateOnGetRoom(roomId);
+            var isHired = await _bookingRepo.IsHiredAsync(roomId);
+            if(isHired)
+                throw new BadRequestException(ErrorMessages.RoomIsHired);
             if (room.BusinessId != GetCurrentUserId().BusinessId)
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerRoom);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerRoom);
             room.Remove();
             await _unitOfWork.SaveChangeAsync();
             return room.Id;
@@ -186,7 +196,7 @@ namespace Booking.API.Services
             var room = await ValidateOnGetRoom(roomId);
             var review = await ValidateOnGetReview(reviewId);
             if (review.UserId != GetCurrentUserId().Id)
-                throw new BadHttpRequestException(ErrorMessages.IsNotOwnerReview);
+                throw new BadRequestException(ErrorMessages.IsNotOwnerReview);
 
             room.RemoveReview(review);
             return await _unitOfWork.SaveChangeAsync();
@@ -201,7 +211,7 @@ namespace Booking.API.Services
         {
             var review = await _reviewRepository.GetAsync(_ => _.Id == reviewId && !_.IsDelete);
             if (review == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundReview);
+                throw new BadRequestException(ErrorMessages.IsNotFoundReview);
             return review;
         }
 
@@ -209,7 +219,7 @@ namespace Booking.API.Services
         {
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
             return room;
         }
     }

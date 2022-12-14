@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IsExistsApprovedBooking" xml:space="preserve">
-    <value>Tồn tại một booking đã được đồng ý ở phòng này</value>
+    <value>Tồn tại một booking đã được thuê ở phòng này</value>
   </data>
   <data name="IsExistsNameRoom" xml:space="preserve">
     <value>Tên phòng này đã tồn tại</value>
@@ -149,5 +149,8 @@
   </data>
   <data name="IsNotValidStartDay" xml:space="preserve">
     <value>Ngày bắt đầu thuế phải lớn hơn thời gian phòng trống</value>
+  </data>
+  <data name="RoomIsHired" xml:space="preserve">
+    <value>Phòng này đang có người thuê</value>
   </data>
 </root>

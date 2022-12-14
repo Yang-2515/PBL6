@@ -35,7 +35,8 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
             , int? fromPrice
             , int? toPrice)
         {
-            return GetQuery(_ => (name == null
+            return GetQuery(_ => !_.IsDelete
+                                 && (name == null
                                    || _.Name.ToLower().Contains(name.ToLower())
                                  )
                                  && (!locationId.HasValue 
@@ -56,9 +57,9 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
                             );
         }
 
-        public async Task<bool> IsExistsNameRoom(string name)
+        public async Task<bool> IsExistsNameRoom(string name, int locationId)
         {
-            return await AnyAsync(_ => _.Name == name && !_.IsDelete);
+            return await AnyAsync(_ => _.Name == name && _.LocationId == locationId && !_.IsDelete);
         }
     }
 }

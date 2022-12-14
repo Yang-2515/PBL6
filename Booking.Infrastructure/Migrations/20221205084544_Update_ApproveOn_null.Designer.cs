@@ -4,6 +4,7 @@ using Booking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Booking.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221205084544_Update_ApproveOn_null")]
+    partial class Update_ApproveOn_null
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,53 +246,6 @@ namespace Booking.Infrastructure.Migrations
                     b.HasIndex("BookingId");
 
                     b.ToTable("NotificationBookings");
-                });
-
-            modelBuilder.Entity("Booking.Domain.Entities.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreateOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OrderDesc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TranCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Booking.Domain.Entities.Review", b =>
@@ -532,17 +487,6 @@ namespace Booking.Infrastructure.Migrations
                     b.Navigation("Booking");
                 });
 
-            modelBuilder.Entity("Booking.Domain.Entities.Payment", b =>
-                {
-                    b.HasOne("Booking.Domain.Entities.Booking", "Booking")
-                        .WithMany("Payments")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
             modelBuilder.Entity("Booking.Domain.Entities.Review", b =>
                 {
                     b.HasOne("Booking.Domain.Entities.Room", "Room")
@@ -592,8 +536,6 @@ namespace Booking.Infrastructure.Migrations
                     b.Navigation("BookingUtilities");
 
                     b.Navigation("NotificationBookings");
-
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Booking.Domain.Entities.City", b =>

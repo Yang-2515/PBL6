@@ -1,4 +1,5 @@
-﻿using Booking.API.IntegrationEvents.Events;
+﻿using Booking.API.Extensions;
+using Booking.API.IntegrationEvents.Events;
 using Booking.API.ViewModel.Bookings.Request;
 using Booking.API.ViewModel.Bookings.Response;
 using Booking.API.ViewModel.Locations.Response;
@@ -72,7 +73,7 @@ namespace Booking.API.Services
             var booking = await GetBookingAsync(id);
             var isExistsApprovedBooking = await CheckExistsApprovedBooking(booking.RoomId);
             if (isExistsApprovedBooking)
-                throw new BadHttpRequestException(ErrorMessages.IsExistsApprovedBooking);
+                throw new BadRequestException(ErrorMessages.IsExistsApprovedBooking);
             
             booking.UpdateStatus(Domain.BookingStatus.Approved);
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã đồng ý yêu cầu thuê phòng", booking.UserId);
@@ -93,7 +94,9 @@ namespace Booking.API.Services
 
         public async Task<bool> CheckExistsApprovedBooking(int roomId)
         {
-            return await _bookingRepository.AnyAsync(_ => _.RoomId == roomId && _.Status == Domain.BookingStatus.Approved && !_.IsDelete);
+            return await _bookingRepository.AnyAsync(_ => _.RoomId == roomId 
+                                                        && !_.IsDelete
+                                                        && _.Status == Domain.BookingStatus.Success && _.Room.AvailableDay >= DateTime.UtcNow);
         }
 
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync()
@@ -120,16 +123,13 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(id);
 
-            booking.Update(request.StartDay, request.MonthNumber, _bookingUtilityRepository);
+            booking.Update(request.MonthNumber);
 
-            if (request.Utilities.Any())
-            {
-                foreach(var item in request.Utilities)
-                {
-                    booking.AddUtility(item.Id, item.Name, item.Price);
-                }
-            }
             await _bookingRepository.UpdateAsync(booking);
+            var room = await ValidateOnGetRoom(booking.RoomId);
+            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã gia hạn yêu cầu thuê phòng", booking.Room.Location.OwnerId);
+            room.HandleBookingSuccess(request.MonthNumber);
+
             await _unitOfWork.SaveChangeAsync();
 
             return booking.Id;
@@ -139,7 +139,7 @@ namespace Booking.API.Services
         {
             var room = await ValidateOnGetRoom(request.RoomId);
             if (request.StartDay < room.AvailableDay)
-                throw new Exception(ErrorMessages.IsNotValidStartDay);
+                throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
                     , request.MonthNumber
@@ -154,6 +154,7 @@ namespace Booking.API.Services
                 }
             }
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã tạo yêu cầu thuê phòng", room.Location.OwnerId);
+            await SendMessageToFirebase(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã tạo yêu cầu thuê phòng", room.Location.OwnerId);
             await _bookingRepository.InsertAsync(booking);
             await _unitOfWork.SaveChangeAsync();
 
@@ -164,7 +165,7 @@ namespace Booking.API.Services
         {
             var booking = await _bookingRepository.GetAsync(id);
             if (booking == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundBooking);
+                throw new BadRequestException(ErrorMessages.IsNotFoundBooking);
 
             return booking;
         }
@@ -173,15 +174,17 @@ namespace Booking.API.Services
         {
             var room = await _roomRepo.GetAsync(roomId);
             if (room == null)
-                throw new BadHttpRequestException(ErrorMessages.IsNotFoundRoom);
+                throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
             return room;
         }
 
-        public async Task PaymentSuccess(int roomId, int bookingId)
+        public async Task FirstPaymentSuccess(int bookingId)
         {
             var booking = await GetBookingAsync(bookingId);
-            var room = await ValidateOnGetRoom(roomId);
-            var bookings = await _bookingRepository.GetQuery(_ => _.RoomId == roomId && _.Status == Domain.BookingStatus.Pending && !_.IsDelete).ToListAsync();
+            booking.UpdateStatus(Domain.BookingStatus.Success);
+            booking.UpdateDuePayment(1);
+            var room = await ValidateOnGetRoom(booking.RoomId);
+            var bookings = await _bookingRepository.GetQuery(_ => _.RoomId == booking.RoomId && _.Status == Domain.BookingStatus.Pending && !_.IsDelete).ToListAsync();
             foreach (var item in bookings)
             {
                 item.UpdateStatus(Domain.BookingStatus.Reject);
@@ -202,6 +205,14 @@ namespace Booking.API.Services
 
                 throw;
             }
+            await _unitOfWork.SaveChangeAsync();
+        }
+        public async Task PaymentSuccess(int bookingId)
+        {
+            var booking = await GetBookingAsync(bookingId);
+            booking.UpdateDuePayment(1);
+            var room = await ValidateOnGetRoom(booking.RoomId);
+            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
             await _unitOfWork.SaveChangeAsync();
         }
     }

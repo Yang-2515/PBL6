@@ -17,9 +17,9 @@ namespace Booking.API.ViewModel.Locations.Request
         public Expression<Func<Location, bool>> GetFilter(GetLocationFilterRequest request)
         {
             return _ => !_.IsDelete
-                        && (request.CityId.Equals(null) || request.CityId == _.CityId)
-                        && (request.DistrictId.Equals(null) || request.DistrictId == _.DistrictId)
-                        && (request.WardsId.Equals(null) || request.WardsId == _.WardsId);
+                        && (!request.CityId.HasValue || request.CityId == _.CityId)
+                        && (!request.DistrictId.HasValue || request.DistrictId == _.DistrictId)
+                        && (!request.WardsId.HasValue || request.WardsId == _.WardsId);
         }
 
         public Expression<Func<Location, LocationInfoResponse>> GetSelection()

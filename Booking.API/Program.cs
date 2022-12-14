@@ -2,6 +2,7 @@ using Booking.API;
 using Booking.API.Controllers;
 using Booking.API.CronJob;
 using Booking.Domain.Models;
+using Booking.Middleware;
 using EventBus.Abstractions;
 using EventBusRabbitMQ;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -19,14 +20,24 @@ builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionScopedJobFactory();
     var jobKey = new JobKey("MyCronJob");
-    q.AddJob<MyCronJob>(opts => opts.WithIdentity(jobKey));
-
+    q.AddJob<BookingOutOfDayJob>(opts => opts.WithIdentity(jobKey));
+    q.AddJob<RemindPaymentDailyJob>(opts => opts.WithIdentity("RemindPayment"));
+    q.AddJob<ExtendDueBookingJob>(opts => opts.WithIdentity("ExtendDueBooking"));
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("MyCronJob-trigger")
         .WithCronSchedule("0 0 0/3 1/1 * ? *"));
+    q.AddTrigger(opts => opts
+        .ForJob("RemindPayment")
+        .WithIdentity("RemindPayment-trigger")
+        .WithCronSchedule("0 0 0/12 1/1 * ? *"));
+    q.AddTrigger(opts => opts
+        .ForJob("ExtendDueBooking")
+        .WithIdentity("ExtendDueBooking-trigger")
+        .WithCronSchedule("0 0 0/8 1/1 * ? *"));
 
 });
+    
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
@@ -73,6 +84,7 @@ app.UseCors(x => x
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.UseMiddleware<RequestLoggerMiddleware>();
 app.UseForwardedHeaders(new ForwardedHeadersOptions() 
 { 
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.All 
