@@ -82,6 +82,23 @@ namespace Booking.API.Services
             return booking.Id;
         }
 
+        public async Task<int> DoneAsync(int id)
+        {
+            var booking = await GetBookingAsync(id);
+            var isCanCheckDoneBooking = await _bookingRepository.AnyAsync(_ => _.Id == id
+                                                            && _.DuePayment < DateTime.UtcNow
+                                                            && _.Status == BookingStatus.Success
+                                                            && !_.IsDelete);
+            if (!isCanCheckDoneBooking)
+                throw new BadRequestException(ErrorMessages.IsCanNotCheckDoneBooking);
+
+            booking.UpdateStatus(Domain.BookingStatus.Done);
+            booking.Room.UpdateAvailableDay(DateTime.UtcNow);
+
+            await _unitOfWork.SaveChangeAsync();
+            return booking.Id;
+        }
+
         public async Task<int> RejectAsync(int id)
         {
             var booking = await GetBookingAsync(id);
@@ -211,7 +228,7 @@ namespace Booking.API.Services
             var booking = await GetBookingAsync(bookingId);
             booking.UpdateDuePayment(1);
             var room = await ValidateOnGetRoom(booking.RoomId);
-            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
+            booking.AddNoti("6378a7499aaf3e918868b63b", "Ema", "đã thanh toán thành công phòng", room.Location.OwnerId);
             await _unitOfWork.SaveChangeAsync();
         }
     }

@@ -61,6 +61,15 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Không thể hoàn thành booking này.
+        /// </summary>
+        public static string IsCanNotCheckDoneBooking {
+            get {
+                return ResourceManager.GetString("IsCanNotCheckDoneBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tồn tại một booking đã được thuê ở phòng này hoặc đã tồn tại một booking được approved.
         /// </summary>
         public static string IsExistsApprovedBooking {

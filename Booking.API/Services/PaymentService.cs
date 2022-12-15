@@ -59,7 +59,7 @@ namespace Booking.API.Services
                 throw new BadHttpRequestException("Da ton tai ma giao dich");
             }
             //Get payment input
-            var booking = await _bookingRepository.GetAsync(_ => _.Id == request.BookingId && _.Status == BookingStatus.Approved && !_.IsDelete);
+            var booking = await _bookingRepository.GetAsync(_ => _.Id == request.BookingId && (_.Status == BookingStatus.Approved || _.Status == BookingStatus.Success) && !_.IsDelete);
             if (booking == null)
             {
                 throw new BadHttpRequestException("Khong ton tai bookingId can thanh toan");

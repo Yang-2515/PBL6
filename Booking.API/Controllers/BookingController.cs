@@ -55,6 +55,12 @@ namespace Booking.API.Controllers
             return await _bookingService.ApproveAsync(id);
         }
 
+        [HttpPut("{id:int}/done")]
+        public async Task<int> Done([FromRoute] int id)
+        {
+            return await _bookingService.DoneAsync(id);
+        }
+
         [HttpPut("{id:int}/reject")]
         public async Task<int> Reject([FromRoute] int id)
         {

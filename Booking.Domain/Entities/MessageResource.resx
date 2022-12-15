@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="IsCanNotCheckDoneBooking" xml:space="preserve">
+    <value>Không thể hoàn thành booking này</value>
+  </data>
   <data name="IsExistsApprovedBooking" xml:space="preserve">
     <value>Tồn tại một booking đã được thuê ở phòng này hoặc đã tồn tại một booking được approved</value>
   </data>
