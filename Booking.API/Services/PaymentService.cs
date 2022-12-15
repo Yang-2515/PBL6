@@ -1,5 +1,6 @@
 ﻿using Booking.API.Extensions;
 using Booking.API.ViewModel.Payments;
+using Booking.Domain;
 using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Bookings;
@@ -58,10 +59,10 @@ namespace Booking.API.Services
                 throw new BadHttpRequestException("Da ton tai ma giao dich");
             }
             //Get payment input
-            var booking = await _bookingRepository.GetAsync(request.BookingId);
+            var booking = await _bookingRepository.GetAsync(_ => _.Id == request.BookingId && _.Status == BookingStatus.Approved && !_.IsDelete);
             if (booking == null)
             {
-                throw new BadHttpRequestException("Khong ton tai bookingId");
+                throw new BadHttpRequestException("Khong ton tai bookingId can thanh toan");
             }
             Payment payment = new Payment();
             //Save order to db
@@ -219,20 +220,20 @@ namespace Booking.API.Services
                     payment.Status = true;
                     payment.TranCode = vnp_TransactionNo;
                     
-                    var isExistPaymentForBooking = await _paymentRepository.AnyAsync
+                    var countPaymentForBooking = await _paymentRepository.AnyAsync
                                                     ( _ => 
                                                         _.BookingId == bookingId
                                                         && _.Status == true
                                                     );
                     //Neu da thanh toan cho 1 booking id roi
-                    if (isExistPaymentForBooking)
+                    if (countPaymentForBooking)
                     {
-                        await _bookingService.FirstPaymentSuccess(bookingId);
+                        await _bookingService.PaymentSuccess(bookingId);
                     }
                     //Neu chua thanh toan cho booking nao ca
                     else
                     {
-                        await _bookingService.PaymentSuccess(bookingId);
+                        await _bookingService.FirstPaymentSuccess(bookingId);
                     }
 
                     await _unitOfWork.SaveChangeAsync();

@@ -7,7 +7,7 @@ namespace Booking.API.Controllers
 {
     [ApiController]
     [Route("api/booking/payment")]
-    [Authorize]
+    
     public class PaymentController : ControllerBase
     {
         private readonly PaymentService _paymentService;
@@ -16,7 +16,7 @@ namespace Booking.API.Controllers
         {
             _paymentService = paymentService;
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<string> Pay([FromBody] PaymentInfoRequest request)
         {

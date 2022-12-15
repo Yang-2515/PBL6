@@ -19,6 +19,7 @@ namespace Booking.Domain.Entities
             Status = BookingStatus.Pending;
             BookingUtilities = new List<BookingUtility>();
             NotificationBookings = new List<NotificationBooking>();
+            DuePayment = startDay;
             CreateOn = DateTime.UtcNow;
         }
 

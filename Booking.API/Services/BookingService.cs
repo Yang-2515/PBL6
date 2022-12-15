@@ -96,7 +96,7 @@ namespace Booking.API.Services
         {
             return await _bookingRepository.AnyAsync(_ => _.RoomId == roomId 
                                                         && !_.IsDelete
-                                                        && _.Status == Domain.BookingStatus.Success && _.Room.AvailableDay >= DateTime.UtcNow);
+                                                        && ((_.Status == Domain.BookingStatus.Success && _.Room.AvailableDay >= DateTime.UtcNow)||(_.Status == BookingStatus.Approved)));
         }
 
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync(GetBookingRequest request)
@@ -127,7 +127,7 @@ namespace Booking.API.Services
             await _bookingRepository.UpdateAsync(booking);
             var room = await ValidateOnGetRoom(booking.RoomId);
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã gia hạn yêu cầu thuê phòng", booking.Room.Location.OwnerId);
-            room.HandleBookingSuccess(request.MonthNumber);
+            room.HandleBookingSuccess(request.MonthNumber, null);
 
             await _unitOfWork.SaveChangeAsync();
 
@@ -137,7 +137,7 @@ namespace Booking.API.Services
         public async Task<int> AddAsync(AddBookingRequest request)
         {
             var room = await ValidateOnGetRoom(request.RoomId);
-            if (request.StartDay < room.AvailableDay)
+            if (request.StartDay < room.AvailableDay || request.StartDay < DateTime.UtcNow)
                 throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
@@ -190,9 +190,9 @@ namespace Booking.API.Services
                 var username = await _userRepo.GetQuery(_ => _.Id == room.Location.OwnerId).Select(x => x.Name).FirstOrDefaultAsync();
                 item.AddNoti(room.Location.OwnerId, username, "đã hủy bỏ yêu cầu thuê phòng", booking.UserId);
             }
-            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
-            room.HandleBookingSuccess(booking.MonthNumber);
-            var paymentSuccessEvent = new PaymentSuccessIntegrationEvent(GetCurrentUserId().Id, room.BusinessId);
+            booking.AddNoti("6378a7499aaf3e918868b63b", "Ema", "đã thanh toán thành công phòng", room.Location.OwnerId);
+            room.HandleBookingSuccess(booking.MonthNumber, booking.StartDay);
+            var paymentSuccessEvent = new PaymentSuccessIntegrationEvent("6378a7499aaf3e918868b63b", room.BusinessId);
             
             try
             {

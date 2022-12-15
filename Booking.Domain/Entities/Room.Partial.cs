@@ -71,10 +71,19 @@ namespace Booking.Domain.Entities
             Reviews.Clear();
         }
 
-        public void HandleBookingSuccess(int monthNumber)
+        public void HandleBookingSuccess(int monthNumber, DateTime? startDay)
         {
-            var dateTime = AvailableDay.Value.AddMonths(monthNumber);
-            AvailableDay = dateTime;
+            if(!startDay.HasValue)
+            {
+                var dateTime = AvailableDay.Value.AddMonths(monthNumber);
+                AvailableDay = dateTime;
+            }
+            else
+            {
+                var dateTime = startDay.Value.AddMonths(monthNumber);
+                AvailableDay = dateTime;
+            }
+            
             IsBooked = true;
         }
     }

@@ -61,7 +61,7 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tồn tại một booking đã được thuê ở phòng này.
+        ///   Looks up a localized string similar to Tồn tại một booking đã được thuê ở phòng này hoặc đã tồn tại một booking được approved.
         /// </summary>
         public static string IsExistsApprovedBooking {
             get {
