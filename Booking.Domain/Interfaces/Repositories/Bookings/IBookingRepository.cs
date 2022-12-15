@@ -13,6 +13,7 @@ namespace Booking.Domain.Interfaces.Repositories.Bookings
         Task<IEnumerable<BookingEntity>> GetBookingOutOfDay();
         Task<IEnumerable<BookingEntity>> GetBookingDueForPaymentAsync();
         Task<IEnumerable<BookingEntity>> GetBookingMustExtendDueAsync();
+        Task<IEnumerable<BookingEntity>> GetBookingOverDuePaymentAsync();
         Task<bool> IsHiredAsync(int roomId);
     }
 }

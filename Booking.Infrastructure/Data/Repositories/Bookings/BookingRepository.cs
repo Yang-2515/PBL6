@@ -35,8 +35,8 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
             var bookings = await GetQuery(_ => !_.IsDelete
                             && _.Status == BookingStatus.Success
                             && _.Room.AvailableDay.HasValue).ToListAsync();
-            return bookings.Where(_ => (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays < 5
-                                        && (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays > 4);
+            return bookings.Where(_ => (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays < 2
+                                        && (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays > 1);
         }
 
         public async Task<IEnumerable<BookingEntity>> GetBookingOutOfDay()
@@ -45,6 +45,14 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
                             && _.Status == BookingStatus.Approved
                             && _.ApprovedOn.HasValue).ToListAsync();
             return bookings.Where(_ => (DateTime.UtcNow - _.ApprovedOn.Value).TotalDays > 1);
+        }
+
+        public async Task<IEnumerable<BookingEntity>> GetBookingOverDuePaymentAsync()
+        {
+            return await GetQuery(_ => !_.IsDelete
+                            && _.DuePayment < DateTime.UtcNow
+                            && _.Status == BookingStatus.Success)
+                        .ToListAsync();
         }
 
         public async Task<bool> IsHiredAsync(int roomId)

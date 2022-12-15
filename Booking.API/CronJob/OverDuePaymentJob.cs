@@ -6,42 +6,42 @@ using Quartz;
 
 namespace Booking.API.CronJob
 {
-    public class ExtendDueBookingJob : IJob
+    public class OverDuePaymentJob : IJob
     {
-        private readonly ILogger<ExtendDueBookingJob> _logger;
-        private readonly INotificationBookingRepository _notiBookingRepo;
+        private readonly ILogger<OverDuePaymentJob> _logger;
         private readonly IBookingRepository _bookingRepo;
+        private readonly INotificationBookingRepository _notificationBooking;
         private readonly IUserRepository _userRepo;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ExtendDueBookingJob(ILogger<ExtendDueBookingJob> logger
+        public OverDuePaymentJob(ILogger<OverDuePaymentJob> logger
             , IUnitOfWork unitOfWork
-            , INotificationBookingRepository notiBookingRepo
+            , INotificationBookingRepository notificationBooking
             , IBookingRepository bookingRepo
             , IUserRepository userRepo)
         {
             _logger = logger;
-            _notiBookingRepo = notiBookingRepo;
             _unitOfWork = unitOfWork;
             _bookingRepo = bookingRepo;
             _userRepo = userRepo;
+            _notificationBooking = notificationBooking;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            _logger.LogInformation("{now} ExtendDueBooking is working.", DateTime.Now.ToString("T"));
-            var bookings = await _bookingRepo.GetBookingMustExtendDueAsync();
+            _logger.LogInformation("{now} OverDuePaymentJob is working.", DateTime.Now.ToString("T"));
+            var bookings = await _bookingRepo.GetBookingOverDuePaymentAsync();
             foreach (var booking in bookings)
             {
-                booking.UpdateStatus(Domain.BookingStatus.ExtendDueBooking);
+                booking.UpdateStatus(Domain.BookingStatus.OverDuePayment);
                 var username = await _userRepo.GetQuery(_ => _.Id == booking.Room.Location.OwnerId).Select(x => x.Name).FirstOrDefaultAsync();
                 booking.AddNoti(booking.Room.Location.OwnerId
                                 , username
-                                , "thông báo cần gia hạn thuê phòng"
+                                , "thông báo đã quá hạn thanh toán tiền thuê phòng"
                                 , booking.UserId);
                 booking.AddNoti(booking.UserId
                                 , booking.UserName
-                                , "cần gia hạn thuê phòng"
+                                , "đã quá hạn thanh toán tiền phòng"
                                 , booking.Room.Location.OwnerId);
                 await _unitOfWork.SaveChangeAsync();
                 //push noti
