@@ -45,7 +45,7 @@ namespace Booking.API.Services
             _eventBus = eventBus;
             _logger = logger;
         }
-        public async Task<List<GetBookingResponse>> GetBookingByUserAsync(BookingStatus status)
+        public async Task<List<GetBookingResponse>> GetBookingByUserAsync(BookingStatus? status)
         {
             var request = new GetBookingRequest();
             return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, status))
