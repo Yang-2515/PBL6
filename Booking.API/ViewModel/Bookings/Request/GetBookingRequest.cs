@@ -9,13 +9,16 @@ namespace Booking.API.ViewModel.Bookings.Request
 {
     public class GetBookingRequest : ISelection<BookingEntity, GetBookingResponse>
     {
-        public Expression<Func<BookingEntity, bool>> GetFilterByUser(string userId, BookingStatus? status)
+        public BookingStatus? Status { get; set; }
+        public string? Search { get; set; }
+        public Expression<Func<BookingEntity, bool>> GetFilterByUser(string userId, GetBookingRequest request)
         {
             return _ => _.UserId == userId && !_.IsDelete
-                        && (status == 0 || _.Status == status);
+                        && (!request.Status.HasValue || _.Status == request.Status)
+                        && (request.Search == null || _.Id.ToString().Contains(request.Search) || _.Room.Name.Contains(request.Search));
         }
 
-        public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(string businessId)
+        public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(string businessId, GetBookingRequest request)
         {
             return _ => _.BusinessId.Equals(businessId) && !_.IsDelete;
         }

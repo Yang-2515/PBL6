@@ -45,10 +45,9 @@ namespace Booking.API.Services
             _eventBus = eventBus;
             _logger = logger;
         }
-        public async Task<List<GetBookingResponse>> GetBookingByUserAsync(BookingStatus? status)
+        public async Task<List<GetBookingResponse>> GetBookingByUserAsync(GetBookingRequest request)
         {
-            var request = new GetBookingRequest();
-            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, status))
+            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, request))
                                             .OrderByDescending(_ => _.CreateOn)
                                             .Select(request.GetSelection())
                                             .ToListAsync();
@@ -100,10 +99,9 @@ namespace Booking.API.Services
                                                         && _.Status == Domain.BookingStatus.Success && _.Room.AvailableDay >= DateTime.UtcNow);
         }
 
-        public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync()
+        public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync(GetBookingRequest request)
         {
-            var request = new GetBookingRequest();
-            return await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId))
+            return await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId, request))
                         .OrderBy(_ => _.CreateOn)
                         .Select(request.GetSelection())
                         .ToListAsync();

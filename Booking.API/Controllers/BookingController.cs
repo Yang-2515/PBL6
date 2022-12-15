@@ -20,15 +20,15 @@ namespace Booking.API.Controllers
         }
 
         [HttpGet("current-user")]
-        public async Task<List<GetBookingResponse>> GetBookingByUser([FromQuery] BookingStatus status)
+        public async Task<List<GetBookingResponse>> GetBookingByUser([FromQuery] GetBookingRequest request)
         {
-            return await _bookingService.GetBookingByUserAsync(status);
+            return await _bookingService.GetBookingByUserAsync(request);
         }
 
         [HttpGet("business")]
-        public async Task<List<GetBookingResponse>> GetBookingByBusiness()
+        public async Task<List<GetBookingResponse>> GetBookingByBusiness([FromQuery] GetBookingRequest request)
         {
-            return await _bookingService.GetBookingByBusinessAsync();
+            return await _bookingService.GetBookingByBusinessAsync(request);
         }
 
         [HttpPost]
