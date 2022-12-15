@@ -93,6 +93,7 @@ namespace Booking.API.Services
                 throw new BadRequestException(ErrorMessages.IsCanNotCheckDoneBooking);
 
             booking.UpdateStatus(Domain.BookingStatus.Done);
+            booking.Room.UpdateIsBooked(false);
             booking.Room.UpdateAvailableDay(DateTime.UtcNow);
 
             await _unitOfWork.SaveChangeAsync();

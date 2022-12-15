@@ -91,5 +91,10 @@ namespace Booking.Domain.Entities
         {
             AvailableDay = day;
         }
+
+        public void UpdateIsBooked(bool isbooked)
+        {
+            IsBooked = isbooked;
+        }
     }
 }
