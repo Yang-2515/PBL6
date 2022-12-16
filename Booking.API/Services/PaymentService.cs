@@ -102,7 +102,7 @@ namespace Booking.API.Services
 
             //Add Params of 2.1.0 Version
             // 20221210152938
-            var dateExpire = DateTime.UtcNow.AddHours(7).AddMinutes(5).ToString("yyyyMMddHHmmss");
+            var dateExpire = payment.CreateOn.Value.AddMinutes(5).ToString("yyyyMMddHHmmss");
             vnpay.AddRequestData("vnp_ExpireDate", dateExpire);
             //Billing
             vnpay.AddRequestData("vnp_Bill_Mobile", request.BillingMobile.Trim());
