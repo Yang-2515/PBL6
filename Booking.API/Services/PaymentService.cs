@@ -51,7 +51,7 @@ namespace Booking.API.Services
             {
                 throw new ArgumentNullException("Vui lòng cấu hình các tham số: vnp_TmnCode,vnp_HashSecret trong file web.config");
             }
-            var dateNowTick = DateTime.UtcNow.Ticks.ToString();
+            var dateNowTick = DateTime.UtcNow.AddHours(7).Ticks.ToString();
             var paymentCode = "P" + dateNowTick + request.BookingId.ToString();
             var isPaymentValid = await _paymentRepository.AnyAsync(_ => _.PaymentCode == paymentCode);
             if (isPaymentValid)
