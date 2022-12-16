@@ -27,7 +27,8 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
                             && _.Status == BookingStatus.Success
                             && _.DuePayment.HasValue).ToListAsync();
             return bookings.Where(_ => (_.DuePayment.Value - DateTime.UtcNow).TotalDays < 5
-                                        && (_.DuePayment.Value - DateTime.UtcNow).TotalDays > 4);
+                                        && (_.DuePayment.Value - DateTime.UtcNow).TotalDays > 4
+                                        && _.DuePayment.Value.AddMonths(1) < _.Room.AvailableDay);
         }
 
         public async Task<IEnumerable<BookingEntity>> GetBookingMustExtendDueAsync()

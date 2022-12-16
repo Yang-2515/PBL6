@@ -140,7 +140,7 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(id);
 
-            booking.Update(request.MonthNumber);
+            booking.Update(request.MonthNumber + booking.MonthNumber);
             booking.UpdateStatus(BookingStatus.Success);
 
             await _bookingRepository.UpdateAsync(booking);
