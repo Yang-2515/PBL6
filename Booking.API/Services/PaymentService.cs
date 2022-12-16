@@ -51,7 +51,7 @@ namespace Booking.API.Services
             {
                 throw new ArgumentNullException("Vui lòng cấu hình các tham số: vnp_TmnCode,vnp_HashSecret trong file web.config");
             }
-            var dateNowTick = DateTime.Now.Ticks.ToString();
+            var dateNowTick = DateTime.UtcNow.AddHours(7).Ticks.ToString();
             var paymentCode = "P" + dateNowTick + request.BookingId.ToString();
             var isPaymentValid = await _paymentRepository.AnyAsync(_ => _.PaymentCode == paymentCode);
             if (isPaymentValid)
@@ -72,7 +72,7 @@ namespace Booking.API.Services
             payment.Amount = booking.Room.Price * 2000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
             payment.Status = null; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending"
             payment.OrderDesc = request.OrderDesc;
-            payment.CreateOn = DateTime.Now.AddHours(7);
+            payment.CreateOn = DateTime.UtcNow.AddHours(7);
             payment.PaymentCode = paymentCode;
             
 
@@ -102,7 +102,7 @@ namespace Booking.API.Services
 
             //Add Params of 2.1.0 Version
             // 20221210152938
-            var dateExpire = DateTime.Now.AddMinutes(5).ToString("yyyyMMddHHmmss");
+            var dateExpire = DateTime.UtcNow.AddHours(7).AddMinutes(5).ToString("yyyyMMddHHmmss");
             vnpay.AddRequestData("vnp_ExpireDate", dateExpire);
             //Billing
             vnpay.AddRequestData("vnp_Bill_Mobile", request.BillingMobile.Trim());
