@@ -20,7 +20,10 @@ namespace Booking.API.ViewModel.Bookings.Request
 
         public Expression<Func<BookingEntity, bool>> GetFilterByBusiness(string businessId, GetBookingRequest request)
         {
-            return _ => _.BusinessId.Equals(businessId) && !_.IsDelete;
+            return _ => _.BusinessId.Equals(businessId) 
+                        && !_.IsDelete
+                        && (!request.Status.HasValue || _.Status == request.Status)
+                        && (request.Search == null || _.Id.ToString().Contains(request.Search) || _.Room.Name.Contains(request.Search)); ;
         }
 
         public Expression<Func<BookingEntity, GetBookingResponse>> GetSelection()

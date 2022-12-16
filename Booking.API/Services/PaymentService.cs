@@ -69,7 +69,7 @@ namespace Booking.API.Services
             var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(_ => _.Type == "id")?.Value;
             payment.UserId = userId;
             payment.BookingId = request.BookingId; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
-            payment.Amount = request.Amount; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
+            payment.Amount = booking.Room.Price * 2000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
             payment.Status = null; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending"
             payment.OrderDesc = request.OrderDesc;
             payment.CreateOn = DateTime.Now;

@@ -15,6 +15,7 @@ namespace Booking.API.ViewModel.Locations.Request
         public int? WardsId { get; set; }
         public int? MaxPrice { get; set; }
         public int? MinPrice { get; set; }
+        public string? Search { get; set; }
 
         public Expression<Func<Location, bool>> GetFilter(GetLocationFilterRequest request)
         {
@@ -24,7 +25,8 @@ namespace Booking.API.ViewModel.Locations.Request
                         && (!request.WardsId.HasValue || request.WardsId == _.WardsId)
                         && (!(request.MaxPrice.HasValue && request.MinPrice.HasValue) || _.Rooms.Any(_ => _.Price <= request.MaxPrice && _.Price >= request.MinPrice))
                         && (!request.MaxPrice.HasValue || _.Rooms.Any(_ => _.Price <= request.MaxPrice))
-                        && (!request.MinPrice.HasValue || _.Rooms.Any(_ => _.Price >= request.MinPrice));
+                        && (!request.MinPrice.HasValue || _.Rooms.Any(_ => _.Price >= request.MinPrice))
+                        && (request.Search == null || _.Address.Contains(request.Search) || _.Name.Contains(request.Search));
         }
 
         public Expression<Func<Location, LocationInfoResponse>> GetSelection()

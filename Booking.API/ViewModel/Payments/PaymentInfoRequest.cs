@@ -3,7 +3,6 @@
     public class PaymentInfoRequest
     {
         public int BookingId { get; set; }
-        public int Amount { get; set; }
         public string OrderDesc { get; set; }
         public LanguageType Language { get; set; }
         public BankType Bank { get; set; }
