@@ -39,6 +39,18 @@ namespace Booking.API.Services
             _photoService = photoService;
             _bookingRepo = bookingRepo;
         }
+
+        /*public async Task<List<RoomBasicInfoResponse>> GetTopRoomAsync()
+        {
+            return await _reviewRepository.GetQuery()
+                                    .GroupBy(r => r.RoomId)
+                                    .OrderByDescending(_ => _.Sum(_ => _.Rating))
+                                    .Select(r => r.Select(_ => _.Room))
+                                    
+                                    .ToListAsync();
+                                        
+        }*/
+
         public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
         {
             var isValidLocation = await ValidLocation(locationId);

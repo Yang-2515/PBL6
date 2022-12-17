@@ -69,7 +69,13 @@ namespace Booking.API.Services
             var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(_ => _.Type == "id")?.Value;
             payment.UserId = userId;
             payment.BookingId = request.BookingId; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
-            payment.Amount = booking.Room.Price * 2000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
+
+            var countPaymentForBooking = await _paymentRepository.AnyAsync
+                                                    (_ =>
+                                                        _.BookingId == request.BookingId
+                                                        && _.Status == true
+                                                    );
+            payment.Amount = !countPaymentForBooking? booking.Room.Price * 2000 : booking.Room.Price * 1000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
             payment.Status = null; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending"
             payment.OrderDesc = request.OrderDesc;
             payment.CreateOn = DateTime.UtcNow.AddHours(7);
@@ -83,7 +89,7 @@ namespace Booking.API.Services
             vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
             vnpay.AddRequestData("vnp_Command", "pay");
             vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-            vnpay.AddRequestData("vnp_Amount", (payment.Amount * 100).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
+            vnpay.AddRequestData("vnp_Amount", (payment.Amount).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
             if (request.Bank != BankType.None)
             {
                 var a = request.Bank.GetType();
@@ -97,7 +103,7 @@ namespace Booking.API.Services
             vnpay.AddRequestData("vnp_Locale", locale.GetDescription());
             vnpay.AddRequestData("vnp_OrderInfo", payment.PaymentCode);
             vnpay.AddRequestData("vnp_OrderType", request.OrderCategory.ToString()); //default value: other
-            vnpay.AddRequestData("vnp_ReturnUrl", "http://localhost:5001/api/booking/payment/return");
+            vnpay.AddRequestData("vnp_ReturnUrl", "http://localhost:3000/payment-success");
             vnpay.AddRequestData("vnp_TxnRef", "P" + dateNowTick); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
             //Add Params of 2.1.0 Version

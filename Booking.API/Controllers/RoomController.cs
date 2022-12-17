@@ -25,6 +25,13 @@ namespace Booking.API.Controllers
         {
             return await _roomService.GetByFilter(locationId, request);
         }
+
+        /*[HttpGet("top-7")]
+        public async Task<List<RoomBasicInfoResponse>> GetTopRoom()
+        {
+            *//*return await _roomService.GetTopRoomAsync();*//*
+        }*/
+
         [Authorize]
         [HttpPost]
         public async Task<int> CreateRoom([FromBody] AddRoomRequest request)
