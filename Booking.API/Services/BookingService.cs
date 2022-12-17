@@ -178,7 +178,7 @@ namespace Booking.API.Services
                     , request.MonthNumber
                     , GetCurrentUserId().Id
                     , GetCurrentUserId().Name
-                    , GetCurrentUserId().BusinessId);
+                    , room.BusinessId);
             if (request.Utilities.Any())
             {
                 foreach(var item in request.Utilities)
