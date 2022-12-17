@@ -40,16 +40,31 @@ namespace Booking.API.Services
             _bookingRepo = bookingRepo;
         }
 
-        /*public async Task<List<RoomBasicInfoResponse>> GetTopRoomAsync()
+        public async Task<List<RoomBasicInfoResponse>> GetTopRoomAsync()
         {
-            return await _reviewRepository.GetQuery()
-                                    .GroupBy(r => r.RoomId)
-                                    .OrderByDescending(_ => _.Sum(_ => _.Rating))
-                                    .Select(r => r.Select(_ => _.Room))
-                                    
-                                    .ToListAsync();
-                                        
-        }*/
+            var rooms = await _roomRepository.GetQuery(_ => !_.IsDelete)
+                                        .Select(_ => new
+                                        {
+                                            Rating = _.Reviews.Select(_ => _.Rating).Count() == 0 ? 0 : _.Reviews.Select(_ => _.Rating).Sum()/ _.Reviews.Select(_ => _.Rating).Count(),
+                                            Room = _
+                                        })
+                                        .OrderByDescending(_ => _.Rating)
+                                        .Take(7)
+                                        .Select(_ => new RoomBasicInfoResponse()
+                                        {
+                                            Id = _.Room.Id,
+                                            Name = _.Room.Name,
+                                            Price = _.Room.Price,
+                                            Capacity = _.Room.Capacity,
+                                            ImgId = _.Room.ImgId,
+                                            AvailableDay = _.Room.AvailableDay,
+                                        }).ToListAsync();
+            foreach (var item in rooms)
+            {
+                item.ImgUrl = item.ImgId != null ? await _photoService.GetUrlImage(item.ImgId) : null;
+            }
+            return rooms;
+        }
 
         public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
         {
