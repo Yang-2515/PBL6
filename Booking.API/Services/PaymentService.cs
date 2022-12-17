@@ -56,13 +56,13 @@ namespace Booking.API.Services
             var isPaymentValid = await _paymentRepository.AnyAsync(_ => _.PaymentCode == paymentCode);
             if (isPaymentValid)
             {
-                throw new BadHttpRequestException("Da ton tai ma giao dich");
+                throw new BadRequestException("Da ton tai ma giao dich");
             }
             //Get payment input
-            var booking = await _bookingRepository.GetAsync(_ => _.Id == request.BookingId && (_.Status == BookingStatus.Approved || _.Status == BookingStatus.Success) && !_.IsDelete);
+            var booking = await _bookingRepository.GetAsync(_ => _.Id == request.BookingId && (_.Status == BookingStatus.Approved || _.Status == BookingStatus.DuePayment) && !_.IsDelete);
             if (booking == null)
             {
-                throw new BadHttpRequestException("Khong ton tai bookingId can thanh toan");
+                throw new BadRequestException("Khong ton tai bookingId can thanh toan");
             }
             Payment payment = new Payment();
             //Save order to db
@@ -220,7 +220,7 @@ namespace Booking.API.Services
                     var payment = await _paymentRepository.GetQuery(_ => _.PaymentCode == vnp_OrderInfo).FirstOrDefaultAsync();
                     if (payment == null)
                     {
-                        throw new BadHttpRequestException("Khong tim thay payment");
+                        throw new BadRequestException("Khong tim thay payment");
                     }
 
                     payment.Status = true;
