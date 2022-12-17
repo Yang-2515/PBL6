@@ -43,7 +43,8 @@ namespace Booking.API.ViewModel.Bookings.Request
                                         {
                                             Name = _.Name,
                                             Price = _.Price
-                                        }).ToList()
+                                        }).ToList(),
+                ImgUrl = _.Room.ImgId
             };
         }
     }

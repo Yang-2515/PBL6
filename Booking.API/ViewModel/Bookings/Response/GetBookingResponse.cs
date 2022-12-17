@@ -12,6 +12,7 @@ namespace Booking.API.ViewModel.Bookings.Response
         public string Status { get; set; }
         public int RoomId { get; set; }
         public string RoomName { get; set; }
+        public string? ImgUrl { get; set; }
         public List<UtilityResponse> Utilities { get; set; }
     }
 }

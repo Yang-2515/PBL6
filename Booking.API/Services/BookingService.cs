@@ -23,6 +23,7 @@ namespace Booking.API.Services
         private readonly IRoomRepository _roomRepo;
         private readonly INotificationBookingRepository _notificationBookingRepo;
         private readonly IUserRepository _userRepo;
+        private readonly PhotoService _photoService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventBus _eventBus;
         private readonly ILogger<BookingService> _logger;
@@ -32,6 +33,7 @@ namespace Booking.API.Services
             , IRoomRepository roomRepo
             , INotificationBookingRepository notificationBookingRepo
             , IUserRepository userRepo
+            , PhotoService photoService
             , IEventBus eventBus
             , ILogger<BookingService> logger
             , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
@@ -42,15 +44,18 @@ namespace Booking.API.Services
             _roomRepo = roomRepo;
             _notificationBookingRepo = notificationBookingRepo;
             _userRepo = userRepo;
+            _photoService = photoService;
             _eventBus = eventBus;
             _logger = logger;
         }
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync(GetBookingRequest request)
         {
-            return await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, request))
+            var bookings = await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, request))
                                             .OrderByDescending(_ => _.CreateOn)
                                             .Select(request.GetSelection())
                                             .ToListAsync();
+            await ReloadUrl(bookings);
+            return bookings;
         }
 
         public async Task<List<NotiResponse>> GetNotiBookingByUserAsync()
@@ -119,10 +124,20 @@ namespace Booking.API.Services
 
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync(GetBookingRequest request)
         {
-            return await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId, request))
-                        .OrderBy(_ => _.CreateOn)
-                        .Select(request.GetSelection())
-                        .ToListAsync();
+            var bookings =  await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId, request))
+                            .OrderBy(_ => _.CreateOn)
+                            .Select(request.GetSelection())
+                            .ToListAsync();
+            await ReloadUrl(bookings);
+            return bookings;
+        }
+
+        private async Task ReloadUrl(List<GetBookingResponse> bookings)
+        {
+            foreach (var booking in bookings)
+            {
+                booking.ImgUrl = booking.ImgUrl != null ? await _photoService.GetUrlImage(booking.ImgUrl) : null;
+            }
         }
 
         public async Task<int> DeleteAsync(int id)
