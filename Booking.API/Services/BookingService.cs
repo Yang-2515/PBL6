@@ -244,6 +244,7 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(bookingId);
             booking.UpdateDuePayment(1);
+            booking.UpdateStatus(BookingStatus.Success);
             var room = await ValidateOnGetRoom(booking.RoomId);
             booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
             await _unitOfWork.SaveChangeAsync();
