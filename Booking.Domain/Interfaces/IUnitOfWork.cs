@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Booking.Domain.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         Task<bool> SaveChangeAsync();
 

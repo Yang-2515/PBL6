@@ -16,7 +16,7 @@ namespace Booking.Infrastructure.Data
 
         private IsolationLevel? _isolationLevel;
 
-        private readonly ApplicationDbContext? _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -68,14 +68,8 @@ namespace Booking.Infrastructure.Data
 
         public void Dispose()
         {
-            if (_dbContext == null)
-                return;
-            //
-            // Close connection
-            if (_dbContext.Database.GetDbConnection().State == ConnectionState.Open)
-            {
-                _dbContext.Database.GetDbConnection().Close();
-            }
+            if (_dbContext == null) return;
+
             _dbContext.Dispose();
         }
     }
