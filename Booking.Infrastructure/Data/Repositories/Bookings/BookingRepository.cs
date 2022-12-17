@@ -26,9 +26,8 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
             var bookings = await GetQuery(_ => !_.IsDelete
                             && _.Status == BookingStatus.Success
                             && _.DuePayment.HasValue).ToListAsync();
-            return bookings.Where(_ => (_.DuePayment.Value - DateTime.UtcNow).TotalDays < 2
-                                        && (_.DuePayment.Value - DateTime.UtcNow).TotalDays > 1
-                                        && _.DuePayment.Value.AddMonths(1) < _.Room.AvailableDay);
+            return bookings.Where(_ => (_.DuePayment.Value - DateTime.UtcNow).TotalDays < 1
+                                        && _.DuePayment.Value.Month != _.Room.AvailableDay.Value.Month);
         }
 
         public async Task<IEnumerable<BookingEntity>> GetBookingMustExtendDueAsync()
@@ -36,8 +35,7 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
             var bookings = await GetQuery(_ => !_.IsDelete
                             && _.Status == BookingStatus.Success
                             && _.Room.AvailableDay.HasValue).ToListAsync();
-            return bookings.Where(_ => (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays < 2
-                                        && (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays > 1);
+            return bookings.Where(_ => (_.Room.AvailableDay.Value - DateTime.UtcNow).TotalDays < 1);
         }
 
         public async Task<IEnumerable<BookingEntity>> GetBookingOutOfDay()

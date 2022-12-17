@@ -28,7 +28,7 @@ namespace Booking.Domain.Entities
             BookingUtilities.Add(new BookingUtility(Id, utilityId, name, price));
         }
 
-        public void AddNoti(string userId, string username, string message, string notiToUserId)
+        public void AddNoti(string userId, string? username, string message, string notiToUserId)
         {
             NotificationBookings.Add(new NotificationBooking(userId
                                                             , username
