@@ -26,8 +26,8 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
             var bookings = await GetQuery(_ => !_.IsDelete
                             && _.Status == BookingStatus.Success
                             && _.DuePayment.HasValue).ToListAsync();
-            return bookings.Where(_ => (_.DuePayment.Value - DateTime.UtcNow).TotalDays < 5
-                                        && (_.DuePayment.Value - DateTime.UtcNow).TotalDays > 4
+            return bookings.Where(_ => (_.DuePayment.Value - DateTime.UtcNow).TotalDays < 2
+                                        && (_.DuePayment.Value - DateTime.UtcNow).TotalDays > 1
                                         && _.DuePayment.Value.AddMonths(1) < _.Room.AvailableDay);
         }
 
@@ -52,6 +52,7 @@ namespace Booking.Infrastructure.Data.Repositories.Bookings
         {
             return await GetQuery(_ => !_.IsDelete
                             && _.DuePayment < DateTime.UtcNow
+                            && _.DuePayment.Value.AddMonths(1) < _.Room.AvailableDay
                             && _.Status == BookingStatus.Success)
                         .ToListAsync();
         }

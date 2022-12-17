@@ -33,7 +33,6 @@ namespace Booking.API.CronJob
             var bookings = await _bookingRepo.GetBookingOverDuePaymentAsync();
             foreach (var booking in bookings)
             {
-                booking.UpdateStatus(Domain.BookingStatus.OverDue);
                 var username = await _userRepo.GetQuery(_ => _.Id == booking.Room.Location.OwnerId).Select(x => x.Name).FirstOrDefaultAsync();
                 booking.AddNoti(booking.Room.Location.OwnerId
                                 , username

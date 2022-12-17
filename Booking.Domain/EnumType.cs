@@ -19,7 +19,7 @@ namespace Booking.Domain
         Approved = 2,
         Reject = 3,
         Success = 4,
-        OverDue = 5,
+        DuePayment = 5,
         ExtendDue = 6,
         Done = 7,
     }
