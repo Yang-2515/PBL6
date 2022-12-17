@@ -224,9 +224,9 @@ namespace Booking.API.Services
                 var username = await _userRepo.GetQuery(_ => _.Id == room.Location.OwnerId).Select(x => x.Name).FirstOrDefaultAsync();
                 item.AddNoti(room.Location.OwnerId, username, "đã hủy bỏ yêu cầu thuê phòng", booking.UserId);
             }
-            booking.AddNoti("6378a7499aaf3e918868b63b", "Ema", "đã thanh toán thành công phòng", room.Location.OwnerId);
+            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
             room.HandleBookingSuccess(booking.MonthNumber, booking.StartDay);
-            var paymentSuccessEvent = new PaymentSuccessIntegrationEvent("6378a7499aaf3e918868b63b", room.BusinessId);
+            var paymentSuccessEvent = new PaymentSuccessIntegrationEvent(GetCurrentUserId().Id, room.BusinessId);
             
             try
             {
@@ -245,7 +245,7 @@ namespace Booking.API.Services
             var booking = await GetBookingAsync(bookingId);
             booking.UpdateDuePayment(1);
             var room = await ValidateOnGetRoom(booking.RoomId);
-            booking.AddNoti("6378a7499aaf3e918868b63b", "Ema", "đã thanh toán thành công phòng", room.Location.OwnerId);
+            booking.AddNoti(GetCurrentUserId().Id, GetCurrentUserId().Name, "đã thanh toán thành công phòng", room.Location.OwnerId);
             await _unitOfWork.SaveChangeAsync();
         }
     }
