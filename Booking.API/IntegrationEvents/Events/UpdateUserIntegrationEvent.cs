@@ -4,16 +4,16 @@ namespace Booking.API.IntegrationEvents.Events
 {
     public class UpdateUserIntegrationEvent : IntegrationEvent
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
         public string? Avatar { get; set; }
         public UpdateUserIntegrationEvent()
         {
 
         }
-        public UpdateUserIntegrationEvent(string id, string name, string businessId, string? avatar)
+        public UpdateUserIntegrationEvent(string userId, string name, string businessId, string? avatar)
         {
-            Id = id;
+            UserId = userId;
             Name = name;
             Avatar = avatar;
         }
