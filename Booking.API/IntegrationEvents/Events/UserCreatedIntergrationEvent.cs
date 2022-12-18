@@ -1,20 +1,22 @@
 ﻿using EventBus.Events;
+using System.Text.Json.Serialization;
 
 namespace Booking.API.IntegrationEvents.Events
 {
     public class UserCreatedIntergrationEvent : IntegrationEvent
     {
-        public string Id { get; private set; }
-        public string Name { get; private set; }
-        public string BusinessId { get; private set; }
-        public string? Avatar { get; private set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public string? BusinessId { get; set; }
+        public string? Avatar { get; set; }
+        [JsonConstructor]
         public UserCreatedIntergrationEvent()
         {
 
         }
-        public UserCreatedIntergrationEvent(string id, string name, string businessId, string? avatar)
+        public UserCreatedIntergrationEvent(string id, string name, string? businessId, string? avatar)
         {
-            Id = id;
+            UserId = id;
             Name = name;
             BusinessId = businessId;
             Avatar = avatar;
