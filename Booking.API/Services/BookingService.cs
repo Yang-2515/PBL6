@@ -91,7 +91,6 @@ namespace Booking.API.Services
         {
             var booking = await GetBookingAsync(id);
             var isCanCheckDoneBooking = await _bookingRepository.AnyAsync(_ => _.Id == id
-                                                            && _.DuePayment < DateTime.UtcNow
                                                             && (_.Status == BookingStatus.ExtendDue
                                                                 || _.Status == BookingStatus.DuePayment)
                                                             && !_.IsDelete);
