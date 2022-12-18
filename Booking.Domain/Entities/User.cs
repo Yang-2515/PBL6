@@ -8,7 +8,7 @@ namespace Booking.Domain.Entities
 {
     public class User
     {
-        public User(string id, string name, string businessId, string? avatar)
+        public User(string id, string name, string? businessId, string? avatar)
         {
             Id = id;
             Name = name;
@@ -18,7 +18,7 @@ namespace Booking.Domain.Entities
 
         public string Id { get; private set; }
         public string Name { get; private set; }
-        public string BusinessId { get; private set; }
+        public string? BusinessId { get; private set; }
         public string? Avatar { get; private set; }
 
         public void Update(string name, string? avatar)
