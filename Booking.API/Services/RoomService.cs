@@ -58,6 +58,7 @@ namespace Booking.API.Services
                                             Capacity = _.Room.Capacity,
                                             ImgId = _.Room.ImgId,
                                             AvailableDay = _.Room.AvailableDay,
+                                            LocationId = _.Room.LocationId,
                                         }).ToListAsync();
             foreach (var item in rooms)
             {

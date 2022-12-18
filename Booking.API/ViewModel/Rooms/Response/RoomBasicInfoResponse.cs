@@ -12,5 +12,6 @@ namespace Booking.API.ViewModel.Rooms.Response
         public DateTime? AvailableDay { get; set; }
         public string? ImgId { get; set; }
         public string? ImgUrl { get; set; }
+        public int? LocationId { get; set; }
     }
 }
