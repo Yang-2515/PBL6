@@ -13,6 +13,7 @@ namespace Booking.API.ViewModel.Bookings.Response
         public int RoomId { get; set; }
         public string RoomName { get; set; }
         public string? ImgUrl { get; set; }
+        public int? OverDueDay { get; set; }
         public List<UtilityResponse> Utilities { get; set; }
     }
 }

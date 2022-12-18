@@ -44,7 +44,8 @@ namespace Booking.API.ViewModel.Bookings.Request
                                             Name = _.Name,
                                             Price = _.Price
                                         }).ToList(),
-                ImgUrl = _.Room.ImgId
+                ImgUrl = _.Room.ImgId,
+                OverDueDay = _.Status == BookingStatus.DuePayment ? Convert.ToInt32((_.DuePayment.Value - DateTime.UtcNow).TotalDays) : null
             };
         }
     }
