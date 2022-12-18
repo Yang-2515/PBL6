@@ -4,14 +4,14 @@ namespace Booking.API.IntegrationEvents.Events
 {
     public class DeleteUserIntegrationEvent : IntegrationEvent
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public DeleteUserIntegrationEvent()
         {
 
         }
-        public DeleteUserIntegrationEvent(string id)
+        public DeleteUserIntegrationEvent(string userId)
         {
-            Id = id;
+            UserId = userId;
         }
     }
 }

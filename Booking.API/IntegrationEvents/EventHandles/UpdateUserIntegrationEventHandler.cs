@@ -25,7 +25,7 @@ namespace Booking.API.IntegrationEvents.EventHandles
             try
             {
                 await _unitOfWork.BeginTransaction();
-                var user = _userRepository.GetQuery(_ => _.Id == @event.Id).FirstOrDefault();
+                var user = _userRepository.GetQuery(_ => _.Id == @event.UserId).FirstOrDefault();
                 if(user == null)
                 {
                     _logger.LogError("Update user: User Not found");
