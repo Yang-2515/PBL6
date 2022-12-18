@@ -44,7 +44,6 @@ namespace Booking.API.CronJob
                                 , "cần gia hạn thuê phòng"
                                 , booking.Room.Location.OwnerId);
                 await _unitOfWork.SaveChangeAsync();
-                //push noti
             }
         }
     }

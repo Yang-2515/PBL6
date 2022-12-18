@@ -156,7 +156,7 @@ namespace Booking.API.Services
             var booking = await GetBookingAsync(id);
 
             booking.Update(request.MonthNumber + booking.MonthNumber);
-            booking.UpdateStatus(BookingStatus.Success);
+            booking.UpdateStatus(BookingStatus.DuePayment);
 
             await _bookingRepository.UpdateAsync(booking);
             var room = await ValidateOnGetRoom(booking.RoomId);
