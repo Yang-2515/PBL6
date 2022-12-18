@@ -63,6 +63,7 @@ namespace Booking.API.Services
             return await _notificationBookingRepo.GetQuery(_ => _.NotiToUserId == GetCurrentUserId().Id)
                                                 .Select(_ => new NotiResponse
                                                 {
+                                                    Id = _.Id,
                                                     UserId = _.NotiByUserId,
                                                     Username = _.NotiByUserName,
                                                     Message = _.Message + " " + _.Booking.Room.Name + " tại " + _.Booking.Room.Location.Name,
