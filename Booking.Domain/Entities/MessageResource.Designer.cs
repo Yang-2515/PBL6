@@ -106,6 +106,15 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Không tìm thấy thông báo.
+        /// </summary>
+        public static string IsNotFoundNotifiation {
+            get {
+                return ResourceManager.GetString("IsNotFoundNotifiation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không tìm thấy đánh giá.
         /// </summary>
         public static string IsNotFoundReview {

@@ -31,6 +31,12 @@ namespace Booking.API.Controllers
             return await _bookingService.GetBookingByBusinessAsync(request);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<GetBookingResponse> Get([FromRoute] int id)
+        {
+            return await _bookingService.GetAsync(id);
+        }
+
         [HttpPost]
         public async Task<int> Add([FromBody] AddBookingRequest request)
         {
@@ -72,16 +78,11 @@ namespace Booking.API.Controllers
         {
             return await _bookingService.GetNotiBookingByUserAsync();
         }
-        [HttpPut("test/booking/{bookingId:int}")]
-        public async Task Test([FromRoute] int bookingId)
-        {
-          await _bookingService.FirstPaymentSuccess(bookingId);
-        }
 
-        [HttpPut("test1/booking/{bookingId:int}")]
-        public async Task Test1([FromRoute] int bookingId)
+        [HttpPut("noti/{id:int}/isRead")]
+        public async Task<int> UpdateIsReadNoti([FromRoute] int id)
         {
-            await _bookingService.PaymentSuccess(bookingId);
+            return await _bookingService.UpdateIsReadNotiAsync(id);
         }
     }
 }
