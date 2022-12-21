@@ -14,6 +14,7 @@ namespace Booking.Domain.Entities
         public string NotiToUserId { get; private set; }
         public string Message { get; private set; }
         public int BookingId { get; private set; }
+        public bool IsRead { get; private set; }
         public virtual Booking Booking { get; private set; }
     }
 }

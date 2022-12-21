@@ -41,6 +41,7 @@ namespace Booking.API.ViewModel.Bookings.Request
                 Utilities = _.BookingUtilities
                                         .Select(_ => new UtilityResponse
                                         {
+                                            Id = _.Id,
                                             Name = _.Name,
                                             Price = _.Price
                                         }).ToList(),

@@ -132,6 +132,9 @@
   <data name="IsNotFoundLocation" xml:space="preserve">
     <value>Không tìm thấy vị trí</value>
   </data>
+  <data name="IsNotFoundNotifiation" xml:space="preserve">
+    <value>Không tìm thấy thông báo</value>
+  </data>
   <data name="IsNotFoundReview" xml:space="preserve">
     <value>Không tìm thấy đánh giá</value>
   </data>

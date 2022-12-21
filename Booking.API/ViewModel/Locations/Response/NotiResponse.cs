@@ -7,6 +7,7 @@
         public string Username { get; set; }
         public string Message { get; set; }
         public int BookingId { get; set; }
+        public bool IsRead { get; set; }
         public DateTime CreateOn { get; set; }
     }
 }

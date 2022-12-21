@@ -14,7 +14,12 @@ namespace Booking.Domain.Entities
             NotiByUserName = notiByUserName;
             NotiToUserId = notiToUserId;
             Message = message;
+            IsRead = false;
             CreateOn = DateTime.UtcNow;
+        }
+        public void UpdateIsRead(bool isRead)
+        {
+            IsRead = isRead;
         }
     }
 }

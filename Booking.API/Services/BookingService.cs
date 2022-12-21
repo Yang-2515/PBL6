@@ -27,6 +27,7 @@ namespace Booking.API.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventBus _eventBus;
         private readonly ILogger<BookingService> _logger;
+
         public BookingService(IBookingRepository bookingRepository
             , IBookingUtilityRepository bookingUtilityRepository
             , IUnitOfWork unitOfWork
@@ -48,6 +49,43 @@ namespace Booking.API.Services
             _eventBus = eventBus;
             _logger = logger;
         }
+
+        public async Task<GetBookingResponse> GetAsync(int id)
+        {
+            var booking = await GetBookingAsync(id);
+            return new GetBookingResponse
+            {
+                Id = booking.Id,
+                UserId = booking.UserId,
+                UserName = booking.UserName,
+                RoomId = booking.RoomId,
+                RoomName = booking.Room.Name,
+                StartDay = booking.StartDay,
+                MonthNumber = booking.MonthNumber,
+                Status = Enum.GetName(booking.Status),
+                Utilities = booking.BookingUtilities
+                                        .Select(_ => new UtilityResponse
+                                        {
+                                            Id = _.Id,
+                                            Name = _.Name,
+                                            Price = _.Price
+                                        }).ToList(),
+                ImgUrl = booking.Room.ImgId != null ? await _photoService.GetUrlImage(booking.Room.ImgId) : null,
+                OverDueDay = booking.Status == BookingStatus.DuePayment ? Convert.ToInt32((booking.DuePayment.Value - DateTime.UtcNow).TotalDays) : null
+            };
+        }
+
+        public async Task<int> UpdateIsReadNotiAsync(int id)
+        {
+            var noti = await _notificationBookingRepo.GetAsync(_ => _.Id == id);
+            if (noti == null)
+                throw new BadRequestException(ErrorMessages.IsNotFoundNotifiation);
+            noti.UpdateIsRead(true);
+
+            await _unitOfWork.SaveChangeAsync();
+            return noti.Id;
+        }
+
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync(GetBookingRequest request)
         {
             var bookings = await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, request))
@@ -68,7 +106,8 @@ namespace Booking.API.Services
                                                     Username = _.NotiByUserName,
                                                     Message = _.Message + " " + _.Booking.Room.Name + " tại " + _.Booking.Room.Location.Name,
                                                     BookingId = _.BookingId,
-                                                    CreateOn = _.CreateOn.Value
+                                                    CreateOn = _.CreateOn.Value,
+                                                    IsRead = _.IsRead
                                                 })
                                                 .OrderByDescending(_ => _.CreateOn)
                                                 .ToListAsync();
