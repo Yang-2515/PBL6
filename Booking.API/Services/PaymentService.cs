@@ -104,7 +104,7 @@ namespace Booking.API.Services
             vnpay.AddRequestData("vnp_Locale", locale.GetDescription());
             vnpay.AddRequestData("vnp_OrderInfo", payment.PaymentCode);
             vnpay.AddRequestData("vnp_OrderType", request.OrderCategory.ToString()); //default value: other
-            vnpay.AddRequestData("vnp_ReturnUrl", "http://localhost:3000/payment-success");
+            vnpay.AddRequestData("vnp_ReturnUrl", "https://shiba-booking-clone.vercel.app/payment-success");
             vnpay.AddRequestData("vnp_TxnRef", "P" + dateNowTick); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
             //Add Params of 2.1.0 Version
