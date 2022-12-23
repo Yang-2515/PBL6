@@ -109,7 +109,7 @@ namespace Booking.API.Services
                                                     CreateOn = _.CreateOn.Value,
                                                     IsRead = _.IsRead
                                                 })
-                                                .OrderByDescending(_ => _.CreateOn)
+                                                .OrderByDescending(_ => _.Id)
                                                 .ToListAsync();
         }
 
@@ -165,7 +165,7 @@ namespace Booking.API.Services
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync(GetBookingRequest request)
         {
             var bookings =  await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId, request))
-                            .OrderByDescending(_ => _.CreateOn)
+                            .OrderByDescending(_ => _.Id)
                             .Select(request.GetSelection())
                             .ToListAsync();
             await ReloadUrl(bookings);

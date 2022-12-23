@@ -21,9 +21,9 @@ namespace Booking.API.Controllers
         }
 
         [HttpPost("/api/booking/locations/{locationId:int}/rooms/all")]
-        public async Task<List<RoomBasicInfoResponse>> GetAll([FromRoute] int locationId, [FromBody] RoomBasicInfoRequest request)
+        public async Task<List<RoomBasicInfoResponse>> GetAll([FromRoute] int locationId)
         {
-            return await _roomService.GetByFilter(locationId, request);
+            return await _roomService.GetByFilter(locationId);
         }
 
         [HttpGet("top-7")]
