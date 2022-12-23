@@ -75,8 +75,8 @@ namespace Booking.API.Services
                                                         _.BookingId == request.BookingId
                                                         && _.Status == true
                                                     );
-            var utilitiesPrice = booking.BookingUtilities.Select(_ => _.Price).Sum();
-            payment.Amount = !countPaymentForBooking? booking.Room.Price * 2 + utilitiesPrice : booking.Room.Price * 1 + utilitiesPrice; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
+            var utilitiesPrice = booking.BookingUtilities.Select(_ => _.Price).Sum() * 100;
+            payment.Amount = !countPaymentForBooking? booking.Room.Price * 200 + utilitiesPrice : booking.Room.Price * 100 + utilitiesPrice; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
             payment.Status = null; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending"
             payment.OrderDesc = request.OrderDesc;
             payment.CreateOn = DateTime.UtcNow.AddHours(7);
