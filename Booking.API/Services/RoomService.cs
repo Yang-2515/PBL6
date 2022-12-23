@@ -45,7 +45,7 @@ namespace Booking.API.Services
             var rooms = await _roomRepository.GetQuery(_ => !_.IsDelete)
                                         .Select(_ => new
                                         {
-                                            Rating = _.Reviews.Select(_ => _.Rating).Count() == 0 ? 0 : _.Reviews.Select(_ => _.Rating).Sum()/ _.Reviews.Select(_ => _.Rating).Count(),
+                                            Rating = _.Reviews.Select(_ => _.Rating).Count() == 0 ? 0 : _.Reviews.Select(_ => _.Rating).Sum() / _.Reviews.Select(_ => _.Rating).Count(),
                                             Room = _
                                         })
                                         .OrderByDescending(_ => _.Rating)
@@ -59,6 +59,7 @@ namespace Booking.API.Services
                                             ImgId = _.Room.ImgId,
                                             AvailableDay = _.Room.AvailableDay,
                                             LocationId = _.Room.LocationId,
+                                            Rating = _.Rating
                                         }).ToListAsync();
             foreach (var item in rooms)
             {
@@ -67,35 +68,12 @@ namespace Booking.API.Services
             return rooms;
         }
 
-        public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId, RoomBasicInfoRequest request)
+        public async Task<List<RoomBasicInfoResponse>> GetByFilter(int locationId)
         {
             var isValidLocation = await ValidLocation(locationId);
             if (!isValidLocation)
                 throw new BadRequestException(ErrorMessages.IsNotFoundLocation);
-            var rooms = _roomRepository.GetByFilter(locationId
-                                                    , request.Name
-                                                    , request.FromCapacity
-                                                    , request.ToCapacity
-                                                    , request.FromPrice
-                                                    , request.ToPrice);
-            if (request.Sort.HasValue)
-            {
-                switch (request.Sort)
-                {
-                    case RoomSortType.Name:
-                        rooms.OrderBy(_ => _.Name);
-                        break;
-                    case RoomSortType.Price:
-                        rooms.OrderBy(_ => _.Price);
-                        break;
-                    case RoomSortType.Capacity:
-                        rooms.OrderBy(_ => _.Capacity);
-                        break;
-                    default:
-                        rooms.OrderBy(_ => _.Name);
-                        break;
-                }
-            }
+            var rooms = _roomRepository.GetByFilter(locationId);
             var roomResponses =  await rooms.Select(new RoomBasicInfoRequest().GetSelection()).ToListAsync();
             foreach (var item in roomResponses)
             {
@@ -108,6 +86,7 @@ namespace Booking.API.Services
         public async Task<RoomBasicInfoResponse> GetAsync(int id)
         {
             var room = await ValidateOnGetRoom(id);
+            var reviews = room.Reviews.Select(_ => _.Rating);
             return new RoomBasicInfoResponse
             {
                 Id = room.Id,
@@ -117,6 +96,7 @@ namespace Booking.API.Services
                 AvailableDay = room.AvailableDay,
                 ImgId = room.ImgId,
                 ImgUrl = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
+                Rating = reviews.Count() == 0 ? 0 : reviews.Sum() / reviews.Count()
             };
         }
 

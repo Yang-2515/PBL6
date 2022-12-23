@@ -23,6 +23,7 @@ namespace Booking.API.ViewModel.Rooms.Request
 				Capacity = _.Capacity,
 				ImgId = _.ImgId,
 				AvailableDay = _.AvailableDay,
+				Rating = _.Reviews.Select(_ => _.Rating).Count() == 0 ? 0 : _.Reviews.Select(_ => _.Rating).Sum() / _.Reviews.Select(_ => _.Rating).Count()
 			};
 		}
 	}

@@ -28,31 +28,11 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
                     && !_.IsDelete);
         }
 
-        public IQueryable<Room> GetByFilter(int? locationId
-            , string? name
-            , int? fromCapacity
-            , int? toCapacity
-            , int? fromPrice
-            , int? toPrice)
+        public IQueryable<Room> GetByFilter(int? locationId)
         {
             return GetQuery(_ => !_.IsDelete
-                                 && (name == null
-                                   || _.Name.ToLower().Contains(name.ToLower())
-                                 )
                                  && (!locationId.HasValue 
                                    || _.LocationId == locationId.Value 
-                                 )
-                                 && (!fromCapacity.HasValue
-                                   || _.Capacity >= fromCapacity.Value
-                                 )
-                                 && (!toCapacity.HasValue
-                                   || _.Capacity <= toCapacity.Value
-                                 )
-                                 && (!fromPrice.HasValue
-                                   || _.Price >= fromPrice.Value
-                                 )
-                                 && (!toPrice.HasValue
-                                   || _.Price >= toPrice.Value
                                  )
                             );
         }

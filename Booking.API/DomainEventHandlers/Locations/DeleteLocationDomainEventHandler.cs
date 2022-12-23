@@ -18,7 +18,7 @@ namespace Booking.API.DomainEventHandlers.Locations
 
         public async Task Handle(DeleteLocationDomainEvent notification, CancellationToken cancellationToken)
         {
-            foreach (var room in _roomRepository.GetByFilter(notification.LocationId, null, null, null, null, null).ToList())
+            foreach (var room in _roomRepository.GetByFilter(notification.LocationId))
             {
                 room.Remove();
             }
