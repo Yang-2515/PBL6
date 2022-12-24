@@ -180,7 +180,7 @@ namespace Booking.API.Services
             if (room.BusinessId != GetCurrentUserId().BusinessId)
                 throw new BadRequestException(ErrorMessages.IsNotOwnerRoom);
 
-            if(room.Name == request.Name)
+            if(room.Name != request.Name)
             {
                 var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name, room.LocationId);
                 if (isExistsName)
