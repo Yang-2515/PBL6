@@ -88,6 +88,15 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bạn đã đánh giá phòng này rồi!!!.
+        /// </summary>
+        public static string IsExistsUserReview {
+            get {
+                return ResourceManager.GetString("IsExistsUserReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không tìm thấy booking.
         /// </summary>
         public static string IsNotFoundBooking {

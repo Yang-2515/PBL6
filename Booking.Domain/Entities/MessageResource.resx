@@ -126,6 +126,9 @@
   <data name="IsExistsNameRoom" xml:space="preserve">
     <value>Tên phòng này đã tồn tại</value>
   </data>
+  <data name="IsExistsUserReview" xml:space="preserve">
+    <value>Bạn đã đánh giá phòng này rồi!!!</value>
+  </data>
   <data name="IsNotFoundBooking" xml:space="preserve">
     <value>Không tìm thấy booking</value>
   </data>

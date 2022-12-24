@@ -144,6 +144,9 @@ namespace Booking.API.Services
 
         public async Task<bool> AddReviewAsync(int roomId, AddReviewRequest request)
         {
+            var isExistUserReview = await _reviewRepository.AnyAsync(_ => _.UserId == GetCurrentUserId().Id && _.RoomId == roomId && !_.IsDelete);
+            if (isExistUserReview)
+                throw new BadRequestException(ErrorMessages.IsExistsUserReview);
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
                 throw new BadRequestException(ErrorMessages.IsNotFoundRoom);
@@ -177,6 +180,13 @@ namespace Booking.API.Services
             if (room.BusinessId != GetCurrentUserId().BusinessId)
                 throw new BadRequestException(ErrorMessages.IsNotOwnerRoom);
 
+            if(room.Name == request.Name)
+            {
+                var isExistsName = await _roomRepository.IsExistsNameRoom(request.Name, room.LocationId);
+                if (isExistsName)
+                    throw new BadRequestException(ErrorMessages.IsExistsNameRoom);
+            }
+           
             room.Update( request.Name
                         ,request.Capacity
                         , request.Price
