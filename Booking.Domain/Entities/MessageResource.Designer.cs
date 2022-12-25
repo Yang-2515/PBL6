@@ -178,7 +178,7 @@ namespace Booking.Domain.Entities {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ngày bắt đầu thuế phải lớn hơn thời gian phòng trống.
+        ///   Looks up a localized string similar to Ngày bắt đầu thuê phải lớn hơn thời gian phòng trống và lớn hơn thời gian hiện tại.
         /// </summary>
         public static string IsNotValidStartDay {
             get {
