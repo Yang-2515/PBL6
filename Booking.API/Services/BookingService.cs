@@ -89,7 +89,8 @@ namespace Booking.API.Services
         public async Task<List<GetBookingResponse>> GetBookingByUserAsync(GetBookingRequest request)
         {
             var bookings = await _bookingRepository.GetQuery(request.GetFilterByUser(GetCurrentUserId().Id, request))
-                                            .OrderByDescending(_ => _.CreateOn)
+                                            .OrderBy(_ => _.RoomId)
+                                            .OrderByDescending(_ => _.Id)
                                             .Select(request.GetSelection())
                                             .ToListAsync();
             await ReloadUrl(bookings);
@@ -165,6 +166,7 @@ namespace Booking.API.Services
         public async Task<List<GetBookingResponse>> GetBookingByBusinessAsync(GetBookingRequest request)
         {
             var bookings =  await _bookingRepository.GetQuery(request.GetFilterByBusiness(GetCurrentUserId().BusinessId, request))
+                            .OrderBy(_ => _.RoomId)
                             .OrderByDescending(_ => _.Id)
                             .Select(request.GetSelection())
                             .ToListAsync();

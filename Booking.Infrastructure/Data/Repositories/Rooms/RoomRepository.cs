@@ -34,7 +34,7 @@ namespace Booking.Infrastructure.Data.Repositories.Rooms
                                  && (!locationId.HasValue 
                                    || _.LocationId == locationId.Value 
                                  )
-                            );
+                            ).OrderByDescending(_ => _.Name);
         }
 
         public async Task<bool> IsExistsNameRoom(string name, int locationId)
