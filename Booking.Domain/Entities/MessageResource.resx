@@ -157,7 +157,7 @@
     <value>Ngày có thể thuế phải lớn hơn thời gian hiện tại</value>
   </data>
   <data name="IsNotValidStartDay" xml:space="preserve">
-    <value>Ngày bắt đầu thuế phải lớn hơn thời gian phòng trống</value>
+    <value>Ngày bắt đầu thuê phải lớn hơn thời gian phòng trống và lớn hơn thời gian hiện tại</value>
   </data>
   <data name="RoomIsHired" xml:space="preserve">
     <value>Phòng này đang có người thuê</value>
