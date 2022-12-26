@@ -214,7 +214,7 @@ namespace Booking.API.Services
         public async Task<int> AddAsync(AddBookingRequest request)
         {
             var room = await ValidateOnGetRoom(request.RoomId);
-            if (request.StartDay.Day < room.AvailableDay.Value.Day || request.StartDay.Day < DateTime.UtcNow.Day)
+            if (request.StartDay.AddDays(1) < room.AvailableDay || request.StartDay.AddDays(1) < DateTime.UtcNow)
                 throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
