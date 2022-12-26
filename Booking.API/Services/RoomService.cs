@@ -119,7 +119,8 @@ namespace Booking.API.Services
 
         public async Task<int> CreateAsync(AddRoomRequest request)
         {
-            if (request.AvailableDay.Day < DateTime.UtcNow.Day)
+            var time = request.AvailableDay.ToLocalTime();
+            if (time.Day < DateTime.UtcNow.Day)
                 throw new BadRequestException(ErrorMessages.IsNotValidAvailableDay);
 
             var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
@@ -135,7 +136,7 @@ namespace Booking.API.Services
                                 , request.Capacity
                                 , request.Price
                                 , request.ImgId
-                                , request.AvailableDay);
+                                , time);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
