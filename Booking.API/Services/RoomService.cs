@@ -58,7 +58,7 @@ namespace Booking.API.Services
                                             Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Room.Price),
                                             Capacity = _.Room.Capacity,
                                             ImgId = _.Room.ImgId,
-                                            AvailableDay = String.Format("{0:dd-MM-yyyy}", _.Room.AvailableDay),
+                                            AvailableDay = _.Room.AvailableDay,
                                             LocationId = _.Room.LocationId,
                                             Rating = _.Rating
                                         }).ToListAsync();
@@ -94,7 +94,7 @@ namespace Booking.API.Services
                 Name = room.Name,
                 Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", room.Price),
                 Capacity = room.Capacity,
-                AvailableDay = String.Format("{0:dd-MM-yyyy}", room.AvailableDay),
+                AvailableDay = room.AvailableDay,
                 ImgId = room.ImgId,
                 ImgUrl = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
                 Rating = reviews.Count() == 0 ? 0 : reviews.Sum() / reviews.Count()

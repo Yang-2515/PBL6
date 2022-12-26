@@ -36,7 +36,7 @@ namespace Booking.API.ViewModel.Bookings.Request
                 UserName = _.UserName,
                 RoomId = _.RoomId,
                 RoomName = _.Room.Name,
-                StartDay = String.Format("{0:dd-MM-yyyy}", _.StartDay),
+                StartDay = _.StartDay,
                 MonthNumber = _.MonthNumber,
                 Status = Enum.GetName(_.Status),
                 Utilities = _.BookingUtilities

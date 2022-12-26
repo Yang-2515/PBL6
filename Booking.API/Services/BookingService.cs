@@ -61,7 +61,7 @@ namespace Booking.API.Services
                 UserName = booking.UserName,
                 RoomId = booking.RoomId,
                 RoomName = booking.Room.Name,
-                StartDay = String.Format("{0:dd-MM-yyyy}", booking.StartDay),
+                StartDay = booking.StartDay,
                 MonthNumber = booking.MonthNumber,
                 Status = Enum.GetName(booking.Status),
                 Utilities = booking.BookingUtilities
@@ -108,7 +108,7 @@ namespace Booking.API.Services
                                                     Username = _.NotiByUserName,
                                                     Message = _.Message + " " + _.Booking.Room.Name + " tại " + _.Booking.Room.Location.Name,
                                                     BookingId = _.BookingId,
-                                                    CreateOn = String.Format("{0:dd-MM-yyyy}", _.CreateOn.Value),
+                                                    CreateOn = _.CreateOn.Value,
                                                     IsRead = _.IsRead
                                                 })
                                                 .OrderByDescending(_ => _.Id)
@@ -214,7 +214,7 @@ namespace Booking.API.Services
         public async Task<int> AddAsync(AddBookingRequest request)
         {
             var room = await ValidateOnGetRoom(request.RoomId);
-            if (request.StartDay.Day < room.AvailableDay.Value.Day || request.StartDay.Day < DateTime.UtcNow.Day)
+            if (request.StartDay.AddDays(1) < room.AvailableDay || request.StartDay.AddDays(1) < DateTime.UtcNow)
                 throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
                     , request.StartDay
