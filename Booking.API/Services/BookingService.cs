@@ -60,7 +60,7 @@ namespace Booking.API.Services
                 UserName = booking.UserName,
                 RoomId = booking.RoomId,
                 RoomName = booking.Room.Name,
-                StartDay = String.Format("{0:d/M/yyyy}", booking.StartDay),
+                StartDay = String.Format("{0:dd-MM-yyyy}", booking.StartDay),
                 MonthNumber = booking.MonthNumber,
                 Status = Enum.GetName(booking.Status),
                 Utilities = booking.BookingUtilities
@@ -107,7 +107,7 @@ namespace Booking.API.Services
                                                     Username = _.NotiByUserName,
                                                     Message = _.Message + " " + _.Booking.Room.Name + " tại " + _.Booking.Room.Location.Name,
                                                     BookingId = _.BookingId,
-                                                    CreateOn = String.Format("{0:d/M/yyyy}", _.CreateOn.Value),
+                                                    CreateOn = String.Format("{0:dd-MM-yyyy}", _.CreateOn.Value),
                                                     IsRead = _.IsRead
                                                 })
                                                 .OrderByDescending(_ => _.Id)
@@ -213,11 +213,10 @@ namespace Booking.API.Services
         public async Task<int> AddAsync(AddBookingRequest request)
         {
             var room = await ValidateOnGetRoom(request.RoomId);
-            var time = request.StartDay.ToLocalTime();
-            if (time.Day < room.AvailableDay.Value.Day || time.Day < DateTime.UtcNow.Day)
+            if (request.StartDay.Day < room.AvailableDay.Value.Day || request.StartDay.Day < DateTime.UtcNow.Day)
                 throw new BadRequestException(ErrorMessages.IsNotValidStartDay);
             var booking = new BookingEntity(request.RoomId
-                    , time
+                    , request.StartDay
                     , request.MonthNumber
                     , GetCurrentUserId().Id
                     , GetCurrentUserId().Name
