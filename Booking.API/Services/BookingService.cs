@@ -11,6 +11,7 @@ using Booking.Domain.Interfaces.Repositories.Rooms;
 using Booking.Domain.Interfaces.Repositories.Users;
 using EventBus.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using BookingEntity = Booking.Domain.Entities.Booking;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
@@ -68,7 +69,7 @@ namespace Booking.API.Services
                                         {
                                             Id = _.Id,
                                             Name = _.Name,
-                                            Price = _.Price
+                                            Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price)
                                         }).ToList(),
                 ImgUrl = booking.Room.ImgId != null ? await _photoService.GetUrlImage(booking.Room.ImgId) : null,
                 OverDueDay = booking.Status == BookingStatus.DuePayment ? Convert.ToInt32((booking.DuePayment.Value - DateTime.UtcNow).TotalDays) : null

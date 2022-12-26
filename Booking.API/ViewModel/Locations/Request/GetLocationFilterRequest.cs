@@ -1,6 +1,7 @@
 ﻿using Booking.API.ViewModel.Interfaces;
 using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain.Entities;
+using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Booking.API.ViewModel.Locations.Request
@@ -49,7 +50,7 @@ namespace Booking.API.ViewModel.Locations.Request
                 {
                     Id = _.Id,
                     Name = _.Name,
-                    Price = _.Price
+                    Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price)
                 }).ToList()
             };
         }
