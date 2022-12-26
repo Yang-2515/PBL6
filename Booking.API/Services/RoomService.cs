@@ -57,7 +57,7 @@ namespace Booking.API.Services
                                             Price = _.Room.Price,
                                             Capacity = _.Room.Capacity,
                                             ImgId = _.Room.ImgId,
-                                            AvailableDay = String.Format("{0:d/M/yyyy}", _.Room.AvailableDay),
+                                            AvailableDay = String.Format("{0:dd-MM-yyyy}", _.Room.AvailableDay),
                                             LocationId = _.Room.LocationId,
                                             Rating = _.Rating
                                         }).ToListAsync();
@@ -93,7 +93,7 @@ namespace Booking.API.Services
                 Name = room.Name,
                 Price = room.Price,
                 Capacity = room.Capacity,
-                AvailableDay = String.Format("{0:d/M/yyyy}", room.AvailableDay),
+                AvailableDay = String.Format("{0:dd-MM-yyyy}", room.AvailableDay),
                 ImgId = room.ImgId,
                 ImgUrl = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
                 Rating = reviews.Count() == 0 ? 0 : reviews.Sum() / reviews.Count()
@@ -119,8 +119,7 @@ namespace Booking.API.Services
 
         public async Task<int> CreateAsync(AddRoomRequest request)
         {
-            var time = request.AvailableDay.ToLocalTime();
-            if (time.Day < DateTime.UtcNow.Day)
+            if (request.AvailableDay.Day < DateTime.UtcNow.Day)
                 throw new BadRequestException(ErrorMessages.IsNotValidAvailableDay);
 
             var isOwner = await _locationRepository.IsOwnerAsync(request.LocationId, GetCurrentUserId().BusinessId);
@@ -136,7 +135,7 @@ namespace Booking.API.Services
                                 , request.Capacity
                                 , request.Price
                                 , request.ImgId
-                                , time);
+                                , request.AvailableDay);
             await _roomRepository.InsertAsync(room);
             await _unitOfWork.SaveChangeAsync();
 
