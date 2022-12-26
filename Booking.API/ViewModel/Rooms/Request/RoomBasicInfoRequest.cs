@@ -22,7 +22,7 @@ namespace Booking.API.ViewModel.Rooms.Request
 				Price = _.Price,
 				Capacity = _.Capacity,
 				ImgId = _.ImgId,
-				AvailableDay = _.AvailableDay,
+				AvailableDay = String.Format("{0:dd-MM-yyyy}", _.AvailableDay),
 				Rating = _.Reviews.Select(_ => _.Rating).Count() == 0 ? 0 : _.Reviews.Select(_ => _.Rating).Sum() / _.Reviews.Select(_ => _.Rating).Count()
 			};
 		}

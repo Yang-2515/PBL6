@@ -57,7 +57,7 @@ namespace Booking.API.Services
                                             Price = _.Room.Price,
                                             Capacity = _.Room.Capacity,
                                             ImgId = _.Room.ImgId,
-                                            AvailableDay = _.Room.AvailableDay,
+                                            AvailableDay = String.Format("{0:d/M/yyyy}", _.Room.AvailableDay),
                                             LocationId = _.Room.LocationId,
                                             Rating = _.Rating
                                         }).ToListAsync();
@@ -93,7 +93,7 @@ namespace Booking.API.Services
                 Name = room.Name,
                 Price = room.Price,
                 Capacity = room.Capacity,
-                AvailableDay = room.AvailableDay,
+                AvailableDay = String.Format("{0:d/M/yyyy}", room.AvailableDay),
                 ImgId = room.ImgId,
                 ImgUrl = room.ImgId != null ? await _photoService.GetUrlImage(room.ImgId) : null,
                 Rating = reviews.Count() == 0 ? 0 : reviews.Sum() / reviews.Count()
