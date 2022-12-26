@@ -9,7 +9,7 @@ namespace Booking.API.ViewModel.Rooms.Response
         public string Name { get; set; }
         public int Capacity { get; set; }
         public string Price { get; set; }
-        public string? AvailableDay { get; set; }
+        public DateTime? AvailableDay { get; set; }
         public string? ImgId { get; set; }
         public string? ImgUrl { get; set; }
         public int? LocationId { get; set; }
