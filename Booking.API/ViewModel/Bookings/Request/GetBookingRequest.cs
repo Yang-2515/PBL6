@@ -2,6 +2,7 @@
 using Booking.API.ViewModel.Interfaces;
 using Booking.API.ViewModel.Locations.Response;
 using Booking.Domain;
+using System.Globalization;
 using System.Linq.Expressions;
 using BookingEntity = Booking.Domain.Entities.Booking;
 
@@ -43,7 +44,7 @@ namespace Booking.API.ViewModel.Bookings.Request
                                         {
                                             Id = _.Id,
                                             Name = _.Name,
-                                            Price = _.Price
+                                            Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price)
                                         }).ToList(),
                 ImgUrl = _.Room.ImgId,
                 OverDueDay = _.Status == BookingStatus.DuePayment ? Convert.ToInt32((_.DuePayment.Value - DateTime.UtcNow).TotalDays) : null

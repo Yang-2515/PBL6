@@ -5,6 +5,7 @@ using Booking.Domain.Entities;
 using Booking.Domain.Interfaces;
 using Booking.Domain.Interfaces.Repositories.Locations;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
 namespace Booking.API.Services
@@ -93,7 +94,7 @@ namespace Booking.API.Services
                 {
                     Id = _.Id,
                     Name = _.Name,
-                    Price = _.Price
+                    Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price)
                 }).ToList()
             };
         }
@@ -106,7 +107,7 @@ namespace Booking.API.Services
                     {
                         Id = _.Id,
                         Name = _.Name,
-                        Price = _.Price
+                        Price = string.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price)
                     }).ToListAsync();
         }
 

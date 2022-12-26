@@ -1,6 +1,7 @@
 ﻿using Booking.API.ViewModel.Rooms.Response;
 using Booking.Domain;
 using Booking.Domain.Entities;
+using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Booking.API.ViewModel.Rooms.Request
@@ -19,7 +20,7 @@ namespace Booking.API.ViewModel.Rooms.Request
 			{
 				Id = _.Id,
 				Name = _.Name,
-				Price = _.Price,
+				Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Price),
 				Capacity = _.Capacity,
 				ImgId = _.ImgId,
 				AvailableDay = String.Format("{0:dd-MM-yyyy}", _.AvailableDay),

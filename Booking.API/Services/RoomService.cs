@@ -11,6 +11,7 @@ using Booking.Domain.Interfaces.Repositories.Locations;
 using Booking.Domain.Interfaces.Repositories.Rooms;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using ErrorMessages = Booking.Domain.Entities.MessageResource;
 
 namespace Booking.API.Services
@@ -54,7 +55,7 @@ namespace Booking.API.Services
                                         {
                                             Id = _.Room.Id,
                                             Name = _.Room.Name,
-                                            Price = _.Room.Price,
+                                            Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", _.Room.Price),
                                             Capacity = _.Room.Capacity,
                                             ImgId = _.Room.ImgId,
                                             AvailableDay = String.Format("{0:dd-MM-yyyy}", _.Room.AvailableDay),
@@ -91,7 +92,7 @@ namespace Booking.API.Services
             {
                 Id = room.Id,
                 Name = room.Name,
-                Price = room.Price,
+                Price = String.Format(new CultureInfo("vi-VN"), "{0:#,##0}", room.Price),
                 Capacity = room.Capacity,
                 AvailableDay = String.Format("{0:dd-MM-yyyy}", room.AvailableDay),
                 ImgId = room.ImgId,
